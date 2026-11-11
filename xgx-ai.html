@@ -1,0 +1,1437 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>XGX AI</title>
+<link rel="stylesheet" media="print" onload="this.media='all'" href="https://fonts.googleapis.com/css2?family=Audiowide&family=Orbitron:wght@600;800;900&display=swap">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+:root{--bg:#000000;--surf:#121212;--surf2:#1f1f1f;--text:#ffffff;--mut:#888888;--bd:#2a2a2a;--acc:#ffffff;--accfg:#000000;--danger:#ff4444;--inp:#121212;--inp-tx:#ffffff;--edge:#2a2a2a;--send-bg:#ffffff;--send-fg:#000000}
+body.light{--bg:#ffffff;--surf:#f5f5f5;--surf2:#ebebeb;--text:#000000;--mut:#666666;--bd:#d1d1d1;--acc:#000000;--accfg:#ffffff;--inp:#ffffff;--inp-tx:#000000;--edge:#d1d1d1;--send-bg:#000000;--send-fg:#ffffff}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',Tahoma,system-ui,sans-serif;display:flex;flex-direction:column;height:100dvh;overflow:hidden;font-size:15px}
+button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.i.s{width:14px;height:14px}
+.ib{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center}
+.ib:hover,.ib:active{background:var(--surf2)}
+header{display:grid;grid-template-columns:auto 1fr auto;align-items:center;padding:6px 8px;padding-top:max(6px,env(safe-area-inset-top));position:relative;border-bottom:1px solid var(--bd)}
+header .start{display:flex;justify-content:flex-start}
+header .mid{display:flex;justify-content:center}
+header .end{display:flex;justify-content:flex-end}
+.pill{display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:20px;font-weight:600;font-size:15px}
+#chat{flex:1;overflow-y:auto;padding:8px 16px 16px}
+.wrap{max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:22px;min-height:100%}
+.welcome{margin:auto;text-align:center;padding:30px 0;display:flex;flex-direction:column;align-items:center;gap:10px}
+.logo{width:52px;height:52px;border-radius:16px;background:var(--acc);color:var(--accfg);display:flex;align-items:center;justify-content:center}
+.logo .i{width:28px;height:28px;fill:currentColor;stroke:none}
+.welcome h1{font-size:22px;font-weight:700;margin-top:8px}
+.welcome p{color:var(--mut);font-size:14px}
+.row{display:flex;gap:12px;animation:in .2s ease-out}
+@keyframes in{from{opacity:0;transform:translateY(6px)}}
+.row.user{justify-content:flex-end}
+.bub{background:var(--surf2);padding:10px 16px;border-radius:20px;max-width:85%;line-height:1.7;white-space:pre-wrap;word-wrap:break-word}
+.av{width:28px;height:28px;border-radius:50%;background:var(--acc);color:var(--accfg);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.av .i{width:15px;height:15px;fill:currentColor;stroke:none}
+.body{flex:1;min-width:0;line-height:1.9;white-space:pre-wrap;word-wrap:break-word}
+.cw{padding:6px 12px;padding-bottom:max(12px,env(safe-area-inset-bottom))}
+.composer{max-width:720px;margin:0 auto;background:var(--inp);border:1px solid var(--edge);border-radius:26px;padding:8px 10px;position:relative}
+.composer:focus-within{box-shadow:0 0 0 3px rgba(127,127,127,.25)}
+textarea{width:100%;background:none;border:none;outline:none;color:var(--inp-tx);font:inherit;resize:none;max-height:140px;padding:6px 8px;line-height:1.6;display:block}
+textarea::placeholder{color:var(--mut)}
+.bar{display:flex;align-items:center;justify-content:space-between;margin-top:2px}
+.cb{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--inp-tx)}
+.cb:hover{background:var(--surf2)}
+.send{width:42px;height:42px;background:var(--send-bg);color:var(--send-fg)}
+.send .i{width:26px;height:26px;stroke-width:2.2}
+.send:disabled{background:var(--send-bg);color:var(--send-fg);opacity:.35;cursor:default}
+.quota{max-width:720px;margin:0 auto 6px;text-align:center;font-size:12px;color:var(--mut)}
+.quota:empty{display:none}
+.dots{display:flex;gap:5px;padding:12px 0}
+.dots i{width:7px;height:7px;border-radius:50%;background:var(--mut);animation:b 1s infinite}
+.dots i:nth-child(2){animation-delay:.15s}.dots i:nth-child(3){animation-delay:.3s}
+@keyframes b{0%,60%,100%{opacity:.3}30%{opacity:1}}
+#toast{position:fixed;bottom:96px;left:50%;transform:translateX(-50%);background:var(--text);color:var(--bg);padding:10px 16px;border-radius:12px;font-size:13px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:70;white-space:nowrap}
+#toast.show{opacity:1}
+
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:opacity .2s;z-index:40}
+.ov.show{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;bottom:0;left:0;width:290px;max-width:85%;background:var(--surf);border-right:1px solid var(--bd);transform:translateX(-100%);transition:transform .25s;z-index:50;display:flex;flex-direction:column;padding:12px;padding-top:max(12px,env(safe-area-inset-top));padding-bottom:max(12px,env(safe-area-inset-bottom))}
+.drawer.open{transform:none}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:17px;padding:4px 6px 12px}
+.avatar{width:36px;height:36px;border-radius:50%;overflow:hidden;flex-shrink:0;display:block}
+.avatar svg{width:100%;height:100%;display:block}
+.nb{display:flex;align-items:center;gap:10px;width:100%;padding:11px 12px;border-radius:12px;border:1px solid var(--bd);margin-bottom:12px}
+.nb:hover{background:var(--surf2)}
+.lbl{font-size:12px;color:var(--mut);padding:0 8px 6px}
+#hist{flex:1;overflow-y:auto}
+.h{display:flex;align-items:center;gap:6px;padding:10px;border-radius:10px;cursor:pointer;font-size:14px}
+.h span{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.h:hover,.h.on{background:var(--surf2)}
+.h button{color:var(--mut);display:flex;padding:4px}
+.vipcard{display:flex;align-items:center;gap:10px;width:100%;padding:12px;border-radius:14px;background:var(--surf2);margin-top:10px;text-align:start}
+.vipcard .i{color:#d0d0d0;fill:#d0d0d0}
+.vipcard b{display:block;font-size:14px}.vipcard small{color:var(--mut);font-size:12px}
+
+.sheet{position:fixed;left:0;right:0;bottom:0;background:var(--surf);border-radius:24px 24px 0 0;padding:20px 16px;padding-bottom:max(20px,env(safe-area-inset-bottom));transform:translateY(100%);transition:transform .25s;z-index:60;max-width:520px;margin:0 auto;border-top:1px solid var(--bd)}
+.sheet.show{transform:none}
+.sx{position:absolute;top:10px;right:10px;width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--text)}
+.sx:hover{background:var(--surf2)}
+.sheet h2{font-size:19px;display:flex;align-items:center;gap:8px;color:var(--acc)}
+.sheet ul{list-style:none;margin:12px 0 16px;display:flex;flex-direction:column;gap:8px;color:var(--mut);font-size:14px}
+.sheet li{display:flex;gap:8px;align-items:center}.sheet li .i{color:var(--acc);width:16px;height:16px}
+.plan{display:flex;align-items:center;justify-content:space-between;width:100%;padding:14px;border:1.5px solid var(--bd);border-radius:14px;margin-bottom:10px;text-align:start}
+.plan small{display:block;color:var(--acc);font-size:12px;margin-top:2px}
+.plan .pr{font-weight:700;color:var(--acc);font-size:16px}
+.pic{background:#ffffff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cg stroke='black' stroke-width='8' stroke-linecap='round'%3E%3Cline x1='50.0' y1='42.0' x2='50.0' y2='10.0'/%3E%3Cline x1='54.0' y1='43.1' x2='65.0' y2='24.0'/%3E%3Cline x1='56.9' y1='46.0' x2='82.9' y2='31.0'/%3E%3Cline x1='58.0' y1='50.0' x2='78.0' y2='50.0'/%3E%3Cline x1='56.9' y1='54.0' x2='85.5' y2='70.5'/%3E%3Cline x1='54.0' y1='56.9' x2='65.5' y2='76.8'/%3E%3Cline x1='50.0' y1='58.0' x2='50.0' y2='89.0'/%3E%3Cline x1='46.0' y1='56.9' x2='35.5' y2='75.1'/%3E%3Cline x1='43.1' y1='54.0' x2='15.4' y2='70.0'/%3E%3Cline x1='42.0' y1='50.0' x2='20.0' y2='50.0'/%3E%3Cline x1='43.1' y1='46.0' x2='18.0' y2='31.5'/%3E%3Cline x1='46.0' y1='43.1' x2='36.0' y2='25.8'/%3E%3C/g%3E%3C/svg%3E") center/62% no-repeat}
+.cblk{border:1px solid var(--bd);border-radius:12px;overflow:hidden;margin:8px 0;max-width:100%}
+.cbar{display:flex;justify-content:space-between;align-items:center;padding:6px 10px;background:var(--surf2);font-size:12px;color:var(--mut)}
+.cbtn{font-size:12px;padding:3px 10px;border-radius:8px;border:1px solid var(--bd);color:var(--text)}
+.cbtn:hover{background:var(--bd)}
+.cblk pre{margin:0;padding:12px;overflow-x:auto;background:var(--surf);font-family:Consolas,"Courier New",monospace;font-size:13px;line-height:1.5;white-space:pre;direction:ltr;text-align:left}
+header .end{gap:4px}
+.g{display:flex;gap:6px;align-items:center}
+.pro{font-size:12px;padding:5px 10px;border-radius:10px;border:1px solid var(--bd);white-space:nowrap;transition:.3s}
+.pro.on{background:rgba(200,200,200,.12);border-color:var(--acc);color:var(--acc)}
+.cb.rec{color:#8a8a8a}
+.col{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
+.acts{display:flex;gap:6px;flex-wrap:wrap}
+.actbtn{font-size:12px;padding:4px 8px;border-radius:8px;background:var(--surf2);color:var(--mut)}
+.actbtn.on{color:var(--acc)}
+.actbtn.off{color:var(--danger)}
+.sel-plan{text-align:center;margin-bottom:10px;color:var(--acc);font-weight:700}
+.pay-box{text-align:center;margin-bottom:15px}
+.pay-qr{border-radius:10px;margin-bottom:10px;background:#fff;padding:5px}
+.pay-addr{display:flex;align-items:center;background:var(--surf2);padding:10px;border-radius:10px;border:1px solid var(--bd)}
+.addr-txt{flex:1;font-size:11px;word-break:break-all;text-align:left;direction:ltr;user-select:all}
+.copy-btn{background:var(--acc);color:var(--accfg);padding:6px 10px;border-radius:8px;font-size:12px;margin-inline-start:8px}
+.hint{font-size:12px;margin-bottom:10px;color:var(--mut)}
+.txid{width:100%;padding:12px;border-radius:10px;border:1px solid var(--bd);background:var(--surf2);color:var(--text);margin-bottom:10px;direction:ltr}
+.plan.submit{background:var(--acc);color:var(--accfg);justify-content:center;font-weight:700}
+.plan.back{justify-content:center;margin-top:5px}
+.chan{width:34px;height:34px;font-size:15px;border:1px solid var(--bd)}
+.sheet{max-height:88vh;overflow-y:auto}
+.vip-hero{display:flex;gap:12px;align-items:center;margin:4px 0 12px}
+.vip-badge{width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,#d0d0d0,#9a9a9a);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.vip-badge .i{color:#fff;fill:#fff;width:22px;height:22px}
+.vip-title{font-size:18px;font-weight:700}
+.vip-sub{font-size:13px;color:var(--mut);margin-top:2px}
+.perks{list-style:none;display:flex;flex-direction:column;gap:8px;margin:6px 0 16px;font-size:14px}
+.perks li{display:flex;gap:8px;align-items:center}
+.perks .i{color:var(--acc);width:16px;height:16px}
+.planc{position:relative;display:flex;align-items:center;justify-content:space-between;width:100%;padding:14px;border:1px solid var(--bd);border-radius:14px;margin-bottom:12px;background:var(--surf2);text-align:start}
+.planc.best{border:1.5px solid var(--acc)}
+.pl-badge{position:absolute;top:-9px;inset-inline-start:12px;background:var(--acc);color:var(--accfg);font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px}
+.pl-name{font-weight:600;font-size:15px}
+.pl-price{display:flex;align-items:center;gap:6px;font-weight:700;font-size:16px}
+.coin{width:18px;height:18px;flex-shrink:0;display:inline-block;vertical-align:middle}
+.back-link{color:var(--mut);font-size:14px;padding:4px 8px}
+.pay-head{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.pay-title{font-weight:700;font-size:16px}
+.pay-plan{text-align:center;color:var(--mut);font-size:13px}
+.pay-amount{display:flex;align-items:center;justify-content:center;gap:8px;font-size:28px;font-weight:800;margin:6px 0 12px}
+.pay-amount .coin{width:26px;height:26px}
+.steps{padding-inline-start:20px;font-size:13px;color:var(--mut);display:flex;flex-direction:column;gap:4px;margin-bottom:14px}
+.steps b{color:var(--text)}
+.field-label{display:block;font-size:12px;color:var(--mut);margin:6px 0 4px}
+.submit{width:100%;padding:14px;border-radius:14px;background:var(--acc);color:var(--accfg);font-weight:700;margin-top:10px}
+.upg{margin-inline-start:8px;padding:4px 12px;border-radius:999px;background:var(--acc);color:var(--accfg);font-weight:700;font-size:12px}
+.sheet{background:#141414;color:#ffffff;--acc:#d0d0d0;--accfg:#171717;--text:#ffffff;--mut:#b8b8b8;--surf2:#1e1e1e;--bd:#2c2c2c}
+.sheet h2{color:#d0d0d0}
+.vip-title,.pl-name,.pl-price,.perks{color:#ffffff}
+.vip-badge{background:linear-gradient(135deg,#e6e6e6,#9a9a9a)}
+.planc.best{border:1.5px solid #d0d0d0}
+.pl-badge{background:#d0d0d0;color:#171717}
+.copy-btn,.submit{background:#d0d0d0;color:#171717}
+.txid{background:#1e1e1e;color:#ffffff}
+.pill{border:1.5px solid #d0d0d0}
+.pro{border:1.5px solid #d0d0d0;color:#d0d0d0}
+.pro.on{background:rgba(208,208,208,.14);border-color:#d0d0d0;color:#d0d0d0}
+.chan-btn{font-size:11px;font-weight:700;letter-spacing:.3px;padding:5px 10px;border-radius:10px;border:1.5px solid #ffffff;color:#ffffff;white-space:nowrap;background:none}
+.code-nb.on{border-color:#d0d0d0;color:#d0d0d0}
+.code-nb .st{margin-inline-start:auto;font-size:11px;color:var(--mut)}
+.code-nb.on .st{color:#d0d0d0}
+.upg{background:#ffffff;color:#171717;border:1px solid #ffffff}
+.chan-btn{width:34px;height:34px;padding:0;border-radius:50%;border:1.5px solid #ffffff;background:rgba(255,255,255,.06);color:#ffffff;display:flex;align-items:center;justify-content:center;transition:transform .15s,background .2s;flex-shrink:0}
+.chan-btn:hover{background:rgba(255,255,255,.14)}
+.chan-btn:active{transform:scale(.92)}
+.tg-ico{width:18px;height:18px;display:block}
+#theme-btn svg{color:#d0d0d0;filter:drop-shadow(0 0 5px rgba(208,208,208,.55));transition:transform .35s cubic-bezier(.3,1.4,.5,1),filter .25s,color .25s}
+body.light #theme-btn svg{color:#9a9a9a;filter:drop-shadow(0 0 5px rgba(154,154,154,.5))}
+#theme-btn:hover svg{transform:rotate(-20deg) scale(1.12)}
+body.light #theme-btn:hover svg{transform:rotate(90deg) scale(1.12)}
+#theme-btn:active svg{transform:scale(.88)}
+#newchat-btn svg{color:#d0d0d0;stroke-width:2.2;filter:drop-shadow(0 0 4px rgba(208,208,208,.5));transition:transform .3s cubic-bezier(.3,1.4,.5,1),filter .25s}
+#newchat-btn:hover svg{transform:translateY(-2px) rotate(-10deg) scale(1.1);filter:drop-shadow(0 0 7px rgba(208,208,208,.8))}
+#newchat-btn:active svg{transform:scale(.88)}
+@keyframes shine{from{background-position:0% center}to{background-position:200% center}}
+@keyframes float{50%{transform:translateY(-3px)}}
+/* code mode: blue when on */
+.pro.on{background:rgba(189,189,189,.18);border-color:#bdbdbd;color:#d0d0d0;box-shadow:0 0 12px rgba(189,189,189,.35)}
+.code-nb.on{border-color:#bdbdbd;color:#d0d0d0}
+.code-nb.on .st{color:#d0d0d0}
+/* logo */
+.brand-logo{border:0;background:none;padding:6px 10px;display:flex;align-items:center;gap:8px;font-family:Orbitron,'Segoe UI',system-ui,sans-serif;font-weight:900;font-size:17px;letter-spacing:.14em}
+.brand-logo .bx{background:linear-gradient(90deg,#ffffff,#e6e6e6 45%,#bdbdbd);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:0 0 18px rgba(189,189,189,.35)}
+.brand-logo .ba{font-size:11px;letter-spacing:.2em;padding:3px 7px 2px;border-radius:6px;background:linear-gradient(135deg,#bdbdbd,#d0d0d0);color:#111111;box-shadow:0 0 14px rgba(189,189,189,.5)}
+.brand-logo:hover .bx{filter:brightness(1.25)}
+/* VIP: premium look */
+.sheet{background:radial-gradient(120% 70% at 50% -10%,rgba(208,208,208,.22),transparent 60%),radial-gradient(90% 60% at 100% 100%,rgba(189,189,189,.16),transparent 60%),#0c0c0e;border-top:1px solid rgba(208,208,208,.5);box-shadow:0 -18px 60px rgba(208,208,208,.12)}
+.vip-title{font-family:Orbitron,'Segoe UI',sans-serif;font-weight:900;font-size:19px;letter-spacing:.06em;background:linear-gradient(90deg,#ffffff,#d0d0d0,#ffffff);background-size:200% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shine 3.5s linear infinite}
+.vip-badge{width:52px;height:52px;border-radius:16px;background:linear-gradient(135deg,#e6e6e6,#d0d0d0 45%,#9a9a9a);box-shadow:0 0 0 1px rgba(255,255,255,.25),0 8px 30px rgba(208,208,208,.45);animation:float 3s ease-in-out infinite}
+.vip-badge .i{width:24px;height:24px;color:#171717;fill:#171717}
+.vip-sub{color:#cfcfcf;font-size:13px}
+.perks{color:#ffffff}
+.perks .i{color:#d0d0d0;width:17px;height:17px}
+.planc{position:relative;overflow:hidden;border:1px solid rgba(208,208,208,.25);background:linear-gradient(160deg,#1c1c20,#121214);border-radius:18px;padding:16px;margin-bottom:12px;transition:transform .2s,box-shadow .2s}
+.planc::after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 35%,rgba(255,255,255,.14) 50%,transparent 65%);transform:translateX(-120%);transition:transform .7s;pointer-events:none}
+.planc:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(208,208,208,.18)}
+.planc:hover::after{transform:translateX(120%)}
+.planc.best{border:1.5px solid #d0d0d0;background:linear-gradient(160deg,#1e1e1e,#121212);box-shadow:0 0 0 1px rgba(208,208,208,.2),0 12px 40px rgba(208,208,208,.22)}
+.pl-name{font-size:16px;color:#e9e9e9;font-weight:600}
+.pl-price{font-size:20px;font-weight:900;color:#ffffff;font-family:Orbitron,'Segoe UI',sans-serif;letter-spacing:.02em}
+.pl-badge{top:-10px;background:linear-gradient(90deg,#d0d0d0,#e6e6e6,#d0d0d0);background-size:200% auto;color:#171717;font-weight:800;animation:shine 3s linear infinite;box-shadow:0 4px 14px rgba(208,208,208,.35)}
+.coin{width:22px;height:22px}
+.pay-plan{color:#bdbdbd;font-size:13px;letter-spacing:.04em}
+.pay-amount{font-family:Orbitron,'Segoe UI',sans-serif;font-weight:900;font-size:30px;color:#ffffff;text-shadow:0 0 22px rgba(208,208,208,.25)}
+.pay-amount .coin{width:28px;height:28px}
+.steps{color:#bdbdbd}
+.steps b{color:#d0d0d0}
+.pay-qr{border:2px solid #d0d0d0;padding:8px;border-radius:16px;box-shadow:0 0 24px rgba(208,208,208,.25)}
+.pay-addr{background:#16161a;border:1px dashed rgba(208,208,208,.45)}
+.addr-txt{color:#ffffff}
+.copy-btn{background:transparent;border:1px solid #d0d0d0;color:#d0d0d0;border-radius:10px;padding:6px 12px;font-weight:700}
+.copy-btn:hover{background:rgba(208,208,208,.12)}
+.field-label{color:#bdbdbd}
+.txid{background:#0f0f12;border:1px solid rgba(208,208,208,.35);border-radius:14px;padding:14px;color:#ffffff}
+.txid:focus{outline:none;border-color:#d0d0d0;box-shadow:0 0 0 3px rgba(208,208,208,.2)}
+.submit{background:linear-gradient(90deg,#d0d0d0,#e6e6e6,#d0d0d0);background-size:200% auto;color:#171717;font-weight:900;letter-spacing:.05em;font-size:15px;padding:16px;border-radius:16px;box-shadow:0 8px 28px rgba(208,208,208,.35);animation:shine 3s linear infinite;transition:transform .15s}
+.submit:active{transform:scale(.98)}
+.back-link{color:#bdbdbd}
+header .mid{justify-content:flex-start;padding-inline-start:6px}
+.brand-logo{background:#000000;border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:8px 14px;gap:8px;font-family:'Audiowide','Orbitron',sans-serif;font-size:17px;font-weight:400;letter-spacing:.14em;color:#ffffff;box-shadow:0 8px 26px rgba(0,0,0,.65),inset 0 0 0 1px rgba(255,255,255,.04);line-height:1}
+.brand-logo:hover{border-color:rgba(255,255,255,.25)}
+.brand-logo::before{content:"";width:6px;height:6px;border-radius:50%;background:#ffffff;box-shadow:0 0 8px #ffffff;animation:pulse 2s ease-in-out infinite;flex-shrink:0}
+@keyframes pulse{50%{opacity:.3}}
+.brand-logo .bx,.brand-logo .ba{background:none;-webkit-background-clip:border-box;background-clip:border-box;-webkit-text-fill-color:#ffffff;color:#ffffff;padding:0;border-radius:0;box-shadow:none;font-size:inherit;letter-spacing:inherit;text-shadow:none}
+.brand-logo .bx{text-shadow:0 0 16px rgba(255,255,255,.35)}
+.brand-logo:hover .bx{filter:none}
+/* VIP: plain white, clean fonts */
+.sheet{background:#0d0d0d;color:#ffffff;border-top:1px solid #ffffff;box-shadow:none;font-family:'Segoe UI',system-ui,-apple-system,Roboto,'Helvetica Neue',Arial,sans-serif;--acc:#ffffff;--accfg:#000000}
+.sheet .vip-title{font-family:inherit;font-weight:800;font-size:20px;letter-spacing:0;color:#ffffff;background:none;-webkit-background-clip:border-box;background-clip:border-box;-webkit-text-fill-color:#ffffff;animation:none}
+.vip-badge{width:44px;height:44px;border-radius:12px;background:#ffffff;box-shadow:none;animation:none}
+.vip-badge .i{color:#000000;fill:#000000;width:20px;height:20px}
+.vip-sub{color:#9a9a9a;font-size:13px;letter-spacing:0}
+.perks{color:#ffffff;font-size:14px}
+.perks .i{color:#ffffff;width:16px;height:16px}
+.planc{background:#161616;border:1px solid #2e2e2e;border-radius:14px;padding:14px 16px;display:grid;grid-template-columns:1fr auto;gap:6px 12px;align-items:center;overflow:visible;box-shadow:none;transition:border-color .2s}
+.planc::after{display:none}
+.planc:hover{transform:none;box-shadow:none;border-color:#ffffff}
+.planc.best{background:#161616;border:1.5px solid #ffffff;box-shadow:none}
+.pl-badge{grid-column:1 / -1;justify-self:start;position:static;top:auto;left:auto;background:#ffffff;color:#000000;font-size:11px;font-weight:700;padding:3px 8px;border-radius:6px;animation:none;box-shadow:none;letter-spacing:.02em}
+.pl-name{font-family:inherit;font-size:15px;font-weight:600;color:#ffffff}
+.pl-price{font-family:inherit;font-size:18px;font-weight:800;color:#ffffff;letter-spacing:0;display:flex;align-items:center;gap:6px}
+.coin{width:20px;height:20px}
+.hang{position:absolute;top:0;right:22px;display:flex;flex-direction:column;align-items:center;transform-origin:50% 0;animation:swing 2.6s ease-in-out infinite}
+.hang .string{width:1px;height:14px;background:#ffffff}
+.hang .tag{position:relative;background:#ffffff;color:#000000;font-size:12px;font-weight:800;padding:6px 10px;border-radius:8px;box-shadow:0 6px 14px rgba(0,0,0,.45);white-space:nowrap;font-family:inherit}
+.hang .tag::before{content:"";position:absolute;top:4px;left:50%;width:4px;height:4px;margin-left:-2px;border-radius:50%;background:#0d0d0d}
+@keyframes swing{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(8deg)}}
+.pay-title{font-family:inherit;font-weight:700;font-size:16px;color:#ffffff}
+.pay-plan{color:#9a9a9a;font-size:13px;letter-spacing:0;font-family:inherit}
+.pay-amount{font-family:inherit;font-weight:800;font-size:28px;color:#ffffff;text-shadow:none}
+.pay-amount .coin{width:26px;height:26px}
+.steps{color:#9a9a9a;font-size:13px}
+.steps b{color:#ffffff}
+.pay-qr{border:none;padding:8px;border-radius:12px;background:#ffffff;box-shadow:none}
+.pay-addr{background:#161616;border:1px solid #2e2e2e;box-shadow:none}
+.addr-txt{color:#ffffff;font-size:11px}
+.copy-btn{background:#ffffff;color:#000000;border:none;border-radius:8px;padding:7px 12px;font-weight:700;font-size:12px}
+.copy-btn:hover{background:#dddddd}
+.field-label{color:#9a9a9a;font-size:12px}
+.txid{background:#0d0d0d;border:1px solid #2e2e2e;border-radius:12px;padding:13px;color:#ffffff;font-family:inherit;font-size:14px;box-shadow:none}
+.txid:focus{outline:none;border-color:#ffffff;box-shadow:none}
+.submit{background:#ffffff;color:#000000;font-family:inherit;font-weight:800;font-size:15px;letter-spacing:0;padding:15px;border-radius:14px;box-shadow:none;animation:none;transition:background .2s}
+.submit:hover{background:#e6e6e6}
+.submit:active{transform:scale(.98)}
+.back-link{color:#9a9a9a;font-size:14px}
+/* grey palette; only the Telegram channel icon is blue */
+:root{--acc:#c8c8c8;--accfg:#111111;--send-bg:#ffffff;--send-fg:#000000;--danger:#8a8a8a}
+body.light{--acc:#3a3a3a;--accfg:#ffffff;--send-bg:#2a2a2a;--send-fg:#ffffff}
+#theme-btn svg,#newchat-btn svg{color:#cfcfcf;filter:none;stroke-width:1.8}
+body.light #theme-btn svg{color:#333333}
+#theme-btn:hover svg,#newchat-btn:hover svg{filter:drop-shadow(0 0 5px rgba(255,255,255,.3))}
+body.light #theme-btn:hover svg{filter:drop-shadow(0 0 5px rgba(0,0,0,.2))}
+.pro{border:1px solid #8a8a8a;color:#e6e6e6}
+.pro.on{background:rgba(255,255,255,.12);border-color:#e6e6e6;color:#ffffff;box-shadow:0 0 12px rgba(255,255,255,.18)}
+.code-nb{border-color:#3a3a3a}
+.code-nb.on{border-color:#e6e6e6;color:#ffffff}
+.code-nb.on .st{color:#ffffff}
+.code-nb .st{color:#8a8a8a}
+.chan-btn{border:1.5px solid #8a8a8a;color:#2AABEE;background:rgba(255,255,255,.04)}
+.chan-btn:hover{background:rgba(42,171,238,.12);border-color:#2AABEE}
+.vipcard .i{color:#d0d0d0;fill:#d0d0d0}
+.actbtn.off{color:#8a8a8a}
+.cb.rec{color:#ffffff;background:#3a3a3a}
+.brand-sm{font-size:14px;padding:6px 10px;gap:6px}
+.brand-sm .ba{font-size:9px}
+/* code mode ON: solid bright orange */
+.pro.on{background:#ff7a00;border-color:#ff7a00;color:#ffffff;box-shadow:0 0 14px rgba(255,122,0,.55)}
+.code-nb.on{background:#ff7a00;border-color:#ff7a00;color:#ffffff}
+.code-nb.on .st{color:#ffffff}
+/* VIP selling: gold logo, bold perks */
+.gold-logo{font-size:18px;padding:9px 16px;flex-shrink:0}
+.gold-logo::before{background:#f5c451;box-shadow:0 0 8px #f5c451}
+.gold-logo .bx{background:linear-gradient(90deg,#fff1b8,#f5c451 50%,#b8860b);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;text-shadow:none}
+.gold-logo .ba{color:#f5c451;-webkit-text-fill-color:#f5c451}
+.perks li{align-items:flex-start}
+.perks .i{margin-top:3px}
+.perks b{color:#ffffff;font-weight:800}
+.perks span{color:#cfcfcf;line-height:1.5;font-size:14px}
+.brand-logo:not(.gold-logo)::before{background:#ff7a00;box-shadow:0 0 8px #ff7a00}
+/* DadGPT-style refresh */
+.welcome h1{font-size:24px;font-weight:800;margin-bottom:8px}
+.welcome p{color:var(--mut);font-size:14px;margin-bottom:24px}
+.quick-actions{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%;max-width:500px;margin-top:10px}
+.qa-card{background:var(--surf);border:1px solid var(--bd);border-radius:16px;padding:16px;text-align:left;display:flex;flex-direction:column;gap:8px;transition:transform .2s,border-color .2s;cursor:pointer}
+.qa-card:hover{border-color:#8a8a8a;transform:translateY(-2px)}
+.qa-card .qa-icon{width:32px;height:32px;border-radius:8px;background:var(--surf2);display:flex;align-items:center;justify-content:center;margin-bottom:4px;font-size:16px}
+.qa-card .qa-title{font-weight:700;font-size:14px;color:var(--text)}
+.qa-card .qa-desc{font-size:12px;color:var(--mut);line-height:1.4}
+#chat{padding:20px 16px 110px}
+.row{display:flex;gap:12px;animation:slideUp .3s ease-out forwards;opacity:0}
+@keyframes slideUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.row.user{justify-content:flex-end}
+.bub{border-radius:20px 20px 4px 20px;box-shadow:0 2px 10px rgba(0,0,0,.25)}
+.body{background:var(--surf);border:1px solid var(--bd);border-radius:4px 20px 20px 20px;padding:14px 18px;box-shadow:0 2px 10px rgba(0,0,0,.2)}
+.av{background:var(--surf2);border:1px solid var(--bd)}
+.cw{position:fixed;bottom:0;left:0;right:0;padding:16px;background:linear-gradient(to top,var(--bg) 70%,transparent);z-index:20}
+.composer{border-radius:24px;box-shadow:0 8px 32px rgba(0,0,0,.45)}
+.composer:focus-within{border-color:#8a8a8a;box-shadow:0 8px 32px rgba(255,255,255,.08)}
+.dots{padding-left:44px}
+@keyframes blink{0%,100%{opacity:.2}50%{opacity:1}}
+#toast{border-radius:30px;font-weight:700;box-shadow:0 4px 12px rgba(0,0,0,.25)}
+.ov{backdrop-filter:blur(4px)}
+/* monochrome refresh */
+.composer{max-width:768px;margin:0 auto;background:var(--surf);border:1px solid var(--bd);border-radius:30px;padding:6px 6px 6px 16px;display:flex;align-items:center;gap:10px;box-shadow:0 8px 32px rgba(0,0,0,.45)}
+.composer:focus-within{border-color:#8a8a8a;box-shadow:0 8px 32px rgba(255,255,255,.08)}
+.composer textarea{flex:1;padding:10px 0;color:var(--inp-tx)}
+.composer .bar{display:flex;align-items:center;gap:4px;margin:0}
+.pro-pill{background:var(--surf2);color:var(--mut);border:1px solid var(--bd);padding:4px 10px;border-radius:12px;font-size:12px;font-weight:700;margin-right:6px;white-space:nowrap}
+.pro-pill.on{background:#ff7a00;color:#ffffff;border-color:#ff7a00;box-shadow:0 0 12px rgba(255,122,0,.45)}
+.welcome h1{font-size:26px;font-weight:800;letter-spacing:-.5px}
+.qa-card{background:var(--surf);border:1px solid var(--bd);border-radius:16px;padding:16px;text-align:left;display:flex;flex-direction:column;gap:6px;transition:.2s;cursor:pointer}
+.qa-card:hover{border-color:var(--mut);background:var(--surf2)}
+.qa-card .qa-title{font-weight:600;font-size:14px;color:var(--text)}
+.qa-card .qa-desc{font-size:13px;color:var(--mut);line-height:1.4}
+#newchat-drawer{background:#ffffff;color:#000000;border-color:#ffffff;font-weight:700}
+body.light #newchat-drawer{background:#000000;color:#ffffff;border-color:#000000}
+/* DadGPT-like welcome, cards, composer and drawer */
+.welcome{padding:28px 0 18px;gap:0}
+.logo{width:76px;height:76px;border-radius:50%;border:1px solid #2a2a2a;margin-bottom:14px;box-shadow:none}
+.welcome h1{font-size:28px;font-weight:800;letter-spacing:-.4px;margin-top:0;margin-bottom:6px}
+.welcome p{color:#8e8e93;font-size:15px;margin-bottom:26px}
+.quick-actions{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%;max-width:560px}
+.qa-card{background:#0b0b0b;border:1px solid #262626;border-radius:16px;padding:16px;text-align:left;display:flex;flex-direction:column;gap:8px;cursor:pointer;transition:border-color .2s,background .2s}
+.qa-card:hover{border-color:#5a5a5a;background:#121212}
+.qa-icon{width:40px;height:40px;border-radius:10px;background:#1c1c1c;display:flex;align-items:center;justify-content:center;margin-bottom:6px;color:#ffffff}
+.qa-icon .i{width:20px;height:20px}
+.qa-title{font-family:ui-monospace,Menlo,Consolas,monospace;font-weight:700;font-size:13px;letter-spacing:.03em;color:#ffffff}
+.qa-desc{font-size:13px;color:#9a9a9a;line-height:1.4}
+.composer{display:flex;flex-direction:column;gap:6px;padding:10px 12px 10px 16px;border-radius:26px;background:#0d0d0d;border:1px solid #2a2a2a;box-shadow:0 8px 32px rgba(0,0,0,.45)}
+.comp-top{display:flex;align-items:flex-end;gap:8px}
+.comp-top textarea{flex:1;min-width:0;width:auto;padding:10px 0}
+.comp-bottom{display:flex;align-items:center;gap:8px;border-top:1px solid #222;padding-top:8px}
+.chip{width:36px;height:30px;border-radius:10px;border:1px solid #2a2a2a;display:flex;align-items:center;justify-content:center;color:#cfcfcf;background:none}
+.chip:hover{background:#1a1a1a}
+.pro-pill{display:flex;align-items:center;gap:4px;padding:5px 12px;border-radius:12px;border:1px solid #2a2a2a;background:#141414;color:#e6e6e6;font-size:12px;font-weight:700}
+.pro-pill.on{background:#ff7a00;border-color:#ff7a00;color:#ffffff}
+.send{width:38px;height:38px;border-radius:50%;background:#2a2a2a;color:#ffffff}
+.send .i{width:20px;height:20px;stroke-width:2.2}
+.send:disabled{background:#1c1c1c;color:#6b6b6b;opacity:1}
+.h-txt{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.h-txt small{color:#8a8a8a;font-size:11px}
+.lbl{font-size:11px;letter-spacing:.08em;color:#8a8a8a;font-weight:700;padding:0 8px 8px}
+body.light .qa-card{background:#ffffff}
+body.light .logo{border-color:#d1d1d1}
+body.light .composer{background:#f5f5f5;border-color:#d1d1d1}
+body.light .comp-bottom{border-top-color:#e0e0e0}
+body.light .chip{border-color:#d1d1d1;color:#333}
+body.light .send{background:#1a1a1a;color:#ffffff}
+body.light .send:disabled{background:#d9d9d9;color:#8a8a8a}
+/* finer, more professional type */
+body,button,textarea{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;font-weight:400;letter-spacing:-.005em}
+textarea{font-size:14px}
+.welcome h1{font-size:26px;font-weight:600;letter-spacing:-.3px}
+.welcome p{font-size:14px;font-weight:400}
+.qa-card{padding:14px}
+.qa-title{font-size:12px;font-weight:600;letter-spacing:.04em}
+.qa-desc{font-size:12px;font-weight:400}
+.bub{font-size:14px;font-weight:400}
+.body{font-size:14px;font-weight:400;line-height:1.65}
+.h span{font-weight:400;font-size:13px}
+.h-txt small{font-size:10.5px}
+.lbl{font-size:10px;font-weight:600}
+.nb,.nb-primary{font-weight:600;font-size:14px}
+.vipcard b{font-weight:600}
+.actbtn{font-size:11px;font-weight:400}
+/* daily counter in the header, small */
+header .end{gap:6px}
+#quota{margin:0;max-width:none;text-align:right;font-size:11px;font-weight:400;color:#8a8a8a;white-space:nowrap;letter-spacing:.01em}
+#quota:empty{display:none}
+#quota .upg{font-size:10px;font-weight:600;padding:2px 8px;border-radius:999px;margin-inline-start:4px;vertical-align:middle}
+/* language picker */
+header .end{position:relative}
+.flag-btn{font-size:17px;width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;border:1px solid #2a2a2a;background:none}
+.flag-btn:hover{background:#1c1c1c}
+.lang-menu{position:absolute;top:calc(100% + 6px);right:8px;background:#121212;border:1px solid #2a2a2a;border-radius:14px;padding:6px;display:none;z-index:60;min-width:180px;box-shadow:0 12px 32px rgba(0,0,0,.5)}
+.lang-menu.show{display:block}
+.lang-opt{display:flex;align-items:center;gap:10px;width:100%;padding:9px 10px;border-radius:10px;font-size:13px;color:#e6e6e6;text-align:start}
+.lang-opt:hover{background:#1c1c1c}
+.lang-opt.on{font-weight:600;color:#ffffff}
+.lang-opt .lf{font-size:16px}
+body.light .flag-btn{border-color:#d1d1d1}
+body.light .flag-btn:hover{background:#f0f0f0}
+body.light .lang-menu{background:#ffffff;border-color:#d1d1d1}
+body.light .lang-opt{color:#111111}
+body.light .lang-opt:hover{background:#f0f0f0}
+/* image and video chips, VIP labels, plan sections */
+.mchip{display:flex;align-items:center;gap:6px;height:30px;padding:0 10px;border-radius:10px;border:1px solid #2a2a2a;color:#cfcfcf;background:none;font-size:12px;font-weight:500}
+.mchip:hover{background:#1a1a1a}
+.mchip.on{background:#ffffff;color:#000000;border-color:#ffffff}
+.vbadge{font-size:9px;font-weight:700;letter-spacing:.06em;background:#ffffff;color:#000000;padding:2px 5px;border-radius:5px}
+.mchip.on .vbadge{background:#000000;color:#ffffff}
+body.light .mchip{border-color:#d1d1d1;color:#333}
+body.light .mchip.on{background:#111111;color:#ffffff;border-color:#111111}
+body.light .mchip.on .vbadge{background:#ffffff;color:#000000}
+.sec-label{font-size:10px;letter-spacing:.1em;color:#8a8a8a;font-weight:600;margin:6px 0 8px;text-transform:uppercase}
+.sec-cap{font-size:12px;color:#9a9a9a;margin:-4px 0 10px}
+.gen-media{display:block;max-width:100%;border-radius:14px;margin-top:6px}
+.comp-bottom{overflow-x:auto;scrollbar-width:none}
+.comp-bottom::-webkit-scrollbar{display:none}
+.mchip{flex-shrink:0;white-space:nowrap}
+.mchip.beast.on{background:#ff7a00;border-color:#ff7a00;color:#fff;box-shadow:0 0 14px rgba(255,122,0,.55)}
+.mchip.beast.on .vbadge{background:#fff;color:#ff7a00}
+.attach{width:36px;height:36px;border:1px solid #2a2a2a;flex-shrink:0;color:#cfcfcf;align-self:center}
+.attach:hover{background:#1a1a1a}
+body.light .attach{border-color:#d1d1d1;color:#333}
+.att{align-items:center;gap:8px;padding:6px 10px;border-radius:12px;background:var(--surf2);font-size:12px}
+.att .attn{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.attx{display:flex;padding:4px;color:var(--mut)}
+#quota{font-size:14px;font-weight:700;color:#e6e6e6}
+body.light #quota{color:#111}
+.settings{display:none;flex-direction:column;margin-top:6px}
+.settings.open{display:flex}
+.settings .nb{margin-bottom:8px;font-weight:400}
+.set-toggle{margin-top:10px;margin-bottom:0;color:var(--mut)}
+.set-toggle .chev{margin-inline-start:auto;transition:transform .2s}
+.set-toggle.open .chev{transform:rotate(180deg)}
+.api-desc{color:#b8b8b8;font-size:14px;line-height:1.6;margin:10px 0 14px}
+.brand-logo:not(.gold-logo)::before{width:22px;height:22px;border-radius:50%;background:#ffffff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cg stroke='black' stroke-width='8' stroke-linecap='round'%3E%3Cline x1='50.0' y1='42.0' x2='50.0' y2='10.0'/%3E%3Cline x1='54.0' y1='43.1' x2='65.0' y2='24.0'/%3E%3Cline x1='56.9' y1='46.0' x2='82.9' y2='31.0'/%3E%3Cline x1='58.0' y1='50.0' x2='78.0' y2='50.0'/%3E%3Cline x1='56.9' y1='54.0' x2='85.5' y2='70.5'/%3E%3Cline x1='54.0' y1='56.9' x2='65.5' y2='76.8'/%3E%3Cline x1='50.0' y1='58.0' x2='50.0' y2='89.0'/%3E%3Cline x1='46.0' y1='56.9' x2='35.5' y2='75.1'/%3E%3Cline x1='43.1' y1='54.0' x2='15.4' y2='70.0'/%3E%3Cline x1='42.0' y1='50.0' x2='20.0' y2='50.0'/%3E%3Cline x1='43.1' y1='46.0' x2='18.0' y2='31.5'/%3E%3Cline x1='46.0' y1='43.1' x2='36.0' y2='25.8'/%3E%3C/g%3E%3C/svg%3E") center/68% no-repeat;box-shadow:none;animation:none}
+body.light .logo.pic{background-color:#f5f5f5}
+
+/* ===== refresh: minimal grey header, logo, composer ===== */
+header{padding:8px 10px;padding-top:max(8px,env(safe-area-inset-top));border-bottom:1px solid #1e1e1e;background:#000}
+header .mid{justify-content:flex-start;padding:0}
+header #pro-btn{display:none}
+header .end{gap:8px}
+header .ib{width:36px;height:36px;border-radius:10px}
+header .ib .i{width:18px;height:18px;stroke-width:1.4;color:#bdbdbd}
+header .chan-btn{width:32px;height:32px;border:1px solid #2a2a2a;background:transparent}
+header #lang-btn{width:32px;height:32px;border-radius:50%;border:1px solid #2a2a2a;background:transparent;font-size:15px;display:flex;align-items:center;justify-content:center;padding:0}
+header .quota{font-size:11px;color:#777}
+header .hdr-logo{display:flex;align-items:center;gap:8px;padding:6px 12px 6px 9px;border:1px solid #3a3a3a;border-radius:12px;background:transparent;box-shadow:none;font-family:'Audiowide','Orbitron',sans-serif;font-size:14px;font-weight:400;letter-spacing:.14em;color:#fff;line-height:1;transition:border-color .2s}
+header .hdr-logo:hover{border-color:#7a7a7a}
+header .hdr-logo::before{display:none}
+header .hdr-logo .mk{width:22px;height:22px;flex-shrink:0}
+header .hdr-logo .bx{-webkit-text-fill-color:#fff;color:#fff}
+header .hdr-logo .ba{color:#8a8a8a;-webkit-text-fill-color:#8a8a8a;font-size:11px;letter-spacing:.2em}
+header .hdr-logo .live{width:7px;height:7px;border-radius:50%;background:#22c55e;box-shadow:0 0 6px #22c55e;flex-shrink:0;margin-inline-start:2px;animation:liveBlink 1.2s steps(1,end) infinite}
+header .hdr-logo.offline .live{display:none}
+@keyframes liveBlink{0%{opacity:1}50%{opacity:0}}
+.cw{padding:8px 12px 14px;background:linear-gradient(to top,var(--bg) 75%,transparent)}
+.composer{max-width:768px;background:#0b0b0b;border:1px solid #2a2a2a;border-radius:28px;padding:10px 12px;display:block;box-shadow:none}
+.composer:focus-within{border-color:#5a5a5a;box-shadow:none}
+.comp-top{display:flex;align-items:center;gap:8px}
+.comp-top textarea{flex:1;padding:8px 4px;font-size:15px}
+.comp-top .attach{width:34px;height:34px;color:#9a9a9a}
+.comp-top .send{width:38px;height:38px}
+.comp-top .send .i{width:20px;height:20px}
+.comp-bottom{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;padding-top:8px;border-top:1px solid #1f1f1f}
+.mchip{display:flex;align-items:center;gap:6px;padding:5px 10px;border:1px solid #2a2a2a;border-radius:10px;font-size:12px;color:#9a9a9a;background:transparent}
+.mchip.on{border-color:#e6e6e6;color:#fff}
+.mchip .i{width:14px;height:14px}
+
+/* ===== round 3: black logo, live light, mini-app composer ===== */
+.live{width:8px;height:8px;border-radius:50%;background:#22c55e;box-shadow:0 0 8px #22c55e;flex-shrink:0;display:inline-block;animation:liveBlink 1.2s steps(1,end) infinite}
+.live.big{width:18px;height:18px;box-shadow:0 0 20px #22c55e}
+.live.offline{display:none}
+.pic{background:#000 url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20512%20512%22%3E%0A%3Cdefs%3E%0A%3CradialGradient%20id=%22bgGlow%22%20cx=%2250%25%22%20cy=%2250%25%22%20r=%2255%25%22%3E%3Cstop%20offset=%220%22%20stop-color=%22%233a0907%22/%3E%3Cstop%20offset=%221%22%20stop-color=%22%23000000%22/%3E%3C/radialGradient%3E%0A%3ClinearGradient%20id=%22rays%22%20x1=%220%22%20y1=%220%22%20x2=%220%22%20y2=%221%22%3E%3Cstop%20offset=%220%22%20stop-color=%22%23ff5a4a%22/%3E%3Cstop%20offset=%221%22%20stop-color=%22%238f0c07%22/%3E%3C/linearGradient%3E%0A%3CradialGradient%20id=%22core%22%20cx=%2240%25%22%20cy=%2235%25%22%20r=%2270%25%22%3E%3Cstop%20offset=%220%22%20stop-color=%22%23ff7a6b%22/%3E%3Cstop%20offset=%22.5%22%20stop-color=%22%23e5231b%22/%3E%3Cstop%20offset=%221%22%20stop-color=%22%236e0805%22/%3E%3C/radialGradient%3E%0A%3C/defs%3E%0A%3Crect%20width=%22512%22%20height=%22512%22%20rx=%22112%22%20fill=%22url%28%23bgGlow%29%22/%3E%0A%3Ccircle%20cx=%22256%22%20cy=%22256%22%20r=%22236%22%20fill=%22none%22%20stroke=%22%233a0d0a%22%20stroke-width=%223%22/%3E%0A%3Ccircle%20cx=%22256%22%20cy=%22256%22%20r=%22120%22%20fill=%22none%22%20stroke=%22%23ff4b3e%22%20stroke-opacity=%22.35%22%20stroke-width=%222%22%20stroke-dasharray=%224%208%22/%3E%0A%3Cg%20fill=%22url%28%23rays%29%22%3E%3Cpolygon%20points=%22343.2,226.5%20470.0,256.0%20343.2,285.5%22/%3E%3Cpolygon%20points=%22347.9,260.1%20418.3,299.5%20337.6,298.4%22/%3E%3Cpolygon%20points=%22346.2,274.1%20441.3,363.0%20316.7,325.1%22/%3E%3Cpolygon%20points=%22333.6,305.5%20374.8,374.8%20305.5,333.6%22/%3E%3Cpolygon%20points=%22325.1,316.7%20363.0,441.3%20274.1,346.2%22/%3E%3Cpolygon%20points=%22298.4,337.6%20299.5,418.3%20260.1,347.9%22/%3E%3Cpolygon%20points=%22285.5,343.2%20256.0,470.0%20226.5,343.2%22/%3E%3Cpolygon%20points=%22251.9,347.9%20212.5,418.3%20213.6,337.6%22/%3E%3Cpolygon%20points=%22237.9,346.2%20149.0,441.3%20186.9,316.7%22/%3E%3Cpolygon%20points=%22206.5,333.6%20137.2,374.8%20178.4,305.5%22/%3E%3Cpolygon%20points=%22195.3,325.1%2070.7,363.0%20165.8,274.1%22/%3E%3Cpolygon%20points=%22174.4,298.4%2093.7,299.5%20164.1,260.1%22/%3E%3Cpolygon%20points=%22168.8,285.5%2042.0,256.0%20168.8,226.5%22/%3E%3Cpolygon%20points=%22164.1,251.9%2093.7,212.5%20174.4,213.6%22/%3E%3Cpolygon%20points=%22165.8,237.9%2070.7,149.0%20195.3,186.9%22/%3E%3Cpolygon%20points=%22178.4,206.5%20137.2,137.2%20206.5,178.4%22/%3E%3Cpolygon%20points=%22186.9,195.3%20149.0,70.7%20237.9,165.8%22/%3E%3Cpolygon%20points=%22213.6,174.4%20212.5,93.7%20251.9,164.1%22/%3E%3Cpolygon%20points=%22226.5,168.8%20256.0,42.0%20285.5,168.8%22/%3E%3Cpolygon%20points=%22260.1,164.1%20299.5,93.7%20298.4,174.4%22/%3E%3Cpolygon%20points=%22274.1,165.8%20363.0,70.7%20325.1,195.3%22/%3E%3Cpolygon%20points=%22305.5,178.4%20374.8,137.2%20333.6,206.5%22/%3E%3Cpolygon%20points=%22316.7,186.9%20441.3,149.0%20346.2,237.9%22/%3E%3Cpolygon%20points=%22337.6,213.6%20418.3,212.5%20347.9,251.9%22/%3E%3C/g%3E%0A%3Ccircle%20cx=%22470.0%22%20cy=%22256.0%22%20r=%225%22%20fill=%22%23ffb4a8%22/%3E%3Ccircle%20cx=%22441.3%22%20cy=%22363.0%22%20r=%225%22%20fill=%22%23ffb4a8%22/%3E%3Ccircle%20cx=%22363.0%22%20cy=%22441.3%22%20r=%225%22%20fill=%22%23ffb4a8%22/%3E%3Ccircle%20cx=%22256.0%22%20cy=%22470.0%22%20r=%225%22%20fill=%22%23ffb4a8%22/%3E%3Ccircle%20cx=%22149.0%22%20cy=%22441.3%22%20r=%225%22%20fill=%22%23ffb4a8%22/%3E%3Ccircle%20cx=%2270.7%22%20cy=%22363.0%22%20r=%225%22%20fill=%22%23ffb4a8%22/%3E%3Ccircle%20cx=%2242.0%22%20cy=%22256.0%22%20r=%225%22%20fill=%22%23ffb4a8%22/%3E%3Ccircle%20cx=%2270.7%22%20cy=%22149.0%22%20r=%225%22%20fill=%22%23ffb4a8%22/%3E%3Ccircle%20cx=%22149.0%22%20cy=%2270.7%22%20r=%225%22%20fill=%22%23ffb4a8%22/%3E%3Ccircle%20cx=%22256.0%22%20cy=%2242.0%22%20r=%225%22%20fill=%22%23ffb4a8%22/%3E%3Ccircle%20cx=%22363.0%22%20cy=%2270.7%22%20r=%225%22%20fill=%22%23ffb4a8%22/%3E%3Ccircle%20cx=%22441.3%22%20cy=%22149.0%22%20r=%225%22%20fill=%22%23ffb4a8%22/%3E%0A%3Ccircle%20cx=%22256%22%20cy=%22256%22%20r=%2264%22%20fill=%22url%28%23core%29%22/%3E%0A%3Ccircle%20cx=%22256%22%20cy=%22256%22%20r=%2222%22%20fill=%22%23000000%22/%3E%0A%3Ccircle%20cx=%22236%22%20cy=%22236%22%20r=%229%22%20fill=%22%23ffd3cc%22%20fill-opacity=%22.7%22/%3E%0A%3C/svg%3E") center/100% no-repeat}
+.logo{width:72px;height:72px;border-radius:22px;background:#000;border:1px solid #2a2a2a;display:flex;align-items:center;justify-content:center}
+.av{background:#000;border:1px solid #2a2a2a}
+.av .live{width:7px;height:7px;box-shadow:0 0 6px #22c55e}
+.drawer .brand{display:flex;align-items:center;gap:10px}
+.drawer .brand .live{width:9px;height:9px;margin-inline-start:8px}
+.comp-top .send{width:38px;height:38px;background:#1c1c1c;color:#555;border:1px solid #2a2a2a}
+.comp-top .send:not(:disabled){background:#ffffff;color:#000;border-color:#ffffff}
+.comp-top .send:disabled{opacity:1}
+.comp-bottom{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
+.comp-bottom::-webkit-scrollbar{display:none}
+.mchip{flex-shrink:0;padding:6px 11px;border-radius:12px;background:#111111;border:1px solid #2a2a2a;font-weight:500}
+.mchip.on{background:#ffffff;color:#000000;border-color:#ffffff}
+.mchip.on .vbadge{background:#000;color:#fff}
+.vbadge{display:inline-flex;align-items:center;background:#ffffff;color:#000000;font-size:9px;font-weight:800;letter-spacing:.06em;padding:2px 5px;border-radius:5px;margin-inline-start:2px}
+.mkc{width:26px;height:26px;border-radius:8px;flex-shrink:0;border:1px solid #2a2a2a;display:inline-block;background:#000 url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20512%20512%22%3E%0A%3Cdefs%3E%0A%3CradialGradient%20id=%22bgGlow%22%20cx=%2250%25%22%20cy=%2250%25%22%20r=%2255%25%22%3E%3Cstop%20offset=%220%22%20stop-color=%22%233a0907%22/%3E%3Cstop%20offset=%221%22%20stop-color=%22%23000000%22/%3E%3C/radialGradient%3E%0A%3ClinearGradient%20id=%22rays%22%20x1=%220%22%20y1=%220%22%20x2=%220%22%20y2=%221%22%3E%3Cstop%20offset=%220%22%20stop-color=%22%23ff5a4a%22/%3E%3Cstop%20offset=%221%22%20stop-color=%22%238f0c07%22/%3E%3C/linearGradient%3E%0A%3CradialGradient%20id=%22core%22%20cx=%2240%25%22%20cy=%2235%25%22%20r=%2270%25%22%3E%3Cstop%20offset=%220%22%20stop-color=%22%23ff7a6b%22/%3E%3Cstop%20offset=%22.5%22%20stop-color=%22%23e5231b%22/%3E%3Cstop%20offset=%221%22%20stop-color=%22%236e0805%22/%3E%3C/radialGradient%3E%0A%3C/defs%3E%0A%3Crect%20width=%22512%22%20height=%22512%22%20rx=%22112%22%20fill=%22url%28%23bgGlow%29%22/%3E%0A%3Ccircle%20cx=%22256%22%20cy=%22256%22%20r=%22236%22%20fill=%22none%22%20stroke=%22%233a0d0a%22%20stroke-width=%223%22/%3E%0A%3Ccircle%20cx=%22256%22%20cy=%22256%22%20r=%22120%22%20fill=%22none%22%20stroke=%22%23ff4b3e%22%20stroke-opacity=%22.35%22%20stroke-width=%222%22%20stroke-dasharray=%224%208%22/%3E%0A%3Cg%20fill=%22url%28%23rays%29%22%3E%3Cpolygon%20points=%22343.2,226.5%20470.0,256.0%20343.2,285.5%22/%3E%3Cpolygon%20points=%22347.9,260.1%20418.3,299.5%20337.6,298.4%22/%3E%3Cpolygon%20points=%22346.2,274.1%20441.3,363.0%20316.7,325.1%22/%3E%3Cpolygon%20points=%22333.6,305.5%20374.8,374.8%20305.5,333.6%22/%3E%3Cpolygon%20points=%22325.1,316.7%20363.0,441.3%20274.1,346.2%22/%3E%3Cpolygon%20points=%22298.4,337.6%20299.5,418.3%20260.1,347.9%22/%3E%3Cpolygon%20points=%22285.5,343.2%20256.0,470.0%20226.5,343.2%22/%3E%3Cpolygon%20points=%22251.9,347.9%20212.5,418.3%20213.6,337.6%22/%3E%3Cpolygon%20points=%22237.9,346.2%20149.0,441.3%20186.9,316.7%22/%3E%3Cpolygon%20points=%22206.5,333.6%20137.2,374.8%20178.4,305.5%22/%3E%3Cpolygon%20points=%22195.3,325.1%2070.7,363.0%20165.8,274.1%22/%3E%3Cpolygon%20points=%22174.4,298.4%2093.7,299.5%20164.1,260.1%22/%3E%3Cpolygon%20points=%22168.8,285.5%2042.0,256.0%20168.8,226.5%22/%3E%3Cpolygon%20points=%22164.1,251.9%2093.7,212.5%20174.4,213.6%22/%3E%3Cpolygon%20points=%22165.8,237.9%2070.7,149.0%20195.3,186.9%22/%3E%3Cpolygon%20points=%22178.4,206.5%20137.2,137.2%20206.5,178.4%22/%3E%3Cpolygon%20points=%22186.9,195.3%20149.0,70.7%20237.9,165.8%22/%3E%3Cpolygon%20points=%22213.6,174.4%20212.5,93.7%20251.9,164.1%22/%3E%3Cpolygon%20points=%22226.5,168.8%20256.0,42.0%20285.5,168.8%22/%3E%3Cpolygon%20points=%22260.1,164.1%20299.5,93.7%20298.4,174.4%22/%3E%3Cpolygon%20points=%22274.1,165.8%20363.0,70.7%20325.1,195.3%22/%3E%3Cpolygon%20points=%22305.5,178.4%20374.8,137.2%20333.6,206.5%22/%3E%3Cpolygon%20points=%22316.7,186.9%20441.3,149.0%20346.2,237.9%22/%3E%3Cpolygon%20points=%22337.6,213.6%20418.3,212.5%20347.9,251.9%22/%3E%3C/g%3E%0A%3Ccircle%20cx=%22470.0%22%20cy=%22256.0%22%20r=%225%22%20fill=%22%23ffb4a8%22/%3E%3Ccircle%20cx=%22441.3%22%20cy=%22363.0%22%20r=%225%22%20fill=%22%23ffb4a8%22/%3E%3Ccircle%20cx=%22363.0%22%20cy=%22441.3%22%20r=%225%22%20fill=%22%23ffb4a8%22/%3E%3Ccircle%20cx=%22256.0%22%20cy=%22470.0%22%20r=%225%22%20fill=%22%23ffb4a8%22/%3E%3Ccircle%20cx=%22149.0%22%20cy=%22441.3%22%20r=%225%22%20fill=%22%23ffb4a8%22/%3E%3Ccircle%20cx=%2270.7%22%20cy=%22363.0%22%20r=%225%22%20fill=%22%23ffb4a8%22/%3E%3Ccircle%20cx=%2242.0%22%20cy=%22256.0%22%20r=%225%22%20fill=%22%23ffb4a8%22/%3E%3Ccircle%20cx=%2270.7%22%20cy=%22149.0%22%20r=%225%22%20fill=%22%23ffb4a8%22/%3E%3Ccircle%20cx=%22149.0%22%20cy=%2270.7%22%20r=%225%22%20fill=%22%23ffb4a8%22/%3E%3Ccircle%20cx=%22256.0%22%20cy=%2242.0%22%20r=%225%22%20fill=%22%23ffb4a8%22/%3E%3Ccircle%20cx=%22363.0%22%20cy=%2270.7%22%20r=%225%22%20fill=%22%23ffb4a8%22/%3E%3Ccircle%20cx=%22441.3%22%20cy=%22149.0%22%20r=%225%22%20fill=%22%23ffb4a8%22/%3E%0A%3Ccircle%20cx=%22256%22%20cy=%22256%22%20r=%2264%22%20fill=%22url%28%23core%29%22/%3E%0A%3Ccircle%20cx=%22256%22%20cy=%22256%22%20r=%2222%22%20fill=%22%23000000%22/%3E%0A%3Ccircle%20cx=%22236%22%20cy=%22236%22%20r=%229%22%20fill=%22%23ffd3cc%22%20fill-opacity=%22.7%22/%3E%0A%3C/svg%3E") center/100% no-repeat}
+/* only the red logo: hide the old white sunburst pseudo-element */
+.brand-logo:not(.gold-logo)::before{display:none !important}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute"><defs>
+<symbol id="menu" viewBox="0 0 24 24"><path d="M4 8h16M4 16h10"/></symbol>
+<symbol id="edit" viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></symbol>
+<symbol id="sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
+<symbol id="moon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z" fill="currentColor" stroke="none"/></symbol>
+<symbol id="plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+<symbol id="up" viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></symbol>
+<symbol id="spark" viewBox="0 0 24 24"><path d="M12 2l2.2 6.8L21 11l-6.8 2.2L12 20l-2.2-6.8L3 11l6.8-2.2z"/></symbol>
+<symbol id="check" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></symbol>
+<symbol id="star" viewBox="0 0 24 24"><path d="M12 2l3.1 6.6 6.9.7-5 4.7 1.2 7-6.2-3.3L5.8 21 7 14 2 9.3l6.9-.7z"/></symbol>
+<symbol id="x" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></symbol>
+<symbol id="mic" viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M19 10a7 7 0 01-14 0M12 17v5"/></symbol>
+<linearGradient id="gramG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5cc8ff"/><stop offset="1" stop-color="#2b7fe0"/></linearGradient><linearGradient id="gramGem" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#e6e6e6"/></linearGradient><symbol id="gram" viewBox="0 0 24 24"><circle cx="12" cy="12" r="12" fill="url(#gramG)"/><path d="M7.2 9.3L9.6 6.6H14.4L16.8 9.3L12 18.6Z" fill="url(#gramGem)"/><path d="M7.2 9.3H16.8M9.6 6.6L10.9 9.3L12 18.6L13.1 9.3L14.4 6.6" fill="none" stroke="#3390ec" stroke-width=".7" stroke-linejoin="round"/><path d="M18.6 2.9L19.1 4.3L20.5 4.8L19.1 5.3L18.6 6.7L18.1 5.3L16.7 4.8L18.1 4.3Z" fill="#ffffff"/></symbol>
+<symbol id="shield" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-8 9-8 9s-8-4-8-9V6z"/></symbol><symbol id="wifi" viewBox="0 0 24 24"><path d="M4 10a12 12 0 0116 0M8 14a6 6 0 018 0"/><circle cx="12" cy="18" r=".6"/></symbol><symbol id="cpu" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/><path d="M10 10h4v4h-4z"/></symbol><symbol id="lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></symbol><symbol id="img" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M3 16l5-5 4 4 3-3 6 6"/></symbol><symbol id="video" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="3"/><path d="M10 10v4l4-2z"/></symbol><symbol id="globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/></symbol><symbol id="bolt" viewBox="0 0 24 24"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></symbol><symbol id="key" viewBox="0 0 24 24"><circle cx="8" cy="12" r="4"/><path d="M12 12h9M18 12v3"/></symbol><symbol id="gear" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16"/><circle cx="9" cy="8" r="2"/><circle cx="15" cy="16" r="2"/></symbol></defs></svg>
+
+<header>
+  <div class="start"><button class="ib" onclick="openDrawer()"><svg class="i"><use href="#menu"/></svg></button></div>
+  <div class="mid"><button class="pill brand-logo hdr-logo" aria-label="XGX AI"><span class="live"></span><span class="bx">XGX</span><span class="ba">AI</span></button></div>
+  <div class="end">
+    <div class="quota" id="quota"></div>
+    <button class="chan-btn" title="Channel" aria-label="Telegram channel" onclick="window.open('https://t.me/GPTXGX', '_blank')"><svg viewBox="0 0 24 24" class="tg-ico"><path fill="currentColor" d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"/></svg></button>
+    <button class="pro" id="pro-btn" onclick="toggleProMode()">🧠 code</button>
+    <button class="flag-btn" id="lang-btn" onclick="toggleLangMenu(event)">🇺🇸</button>
+    <div class="lang-menu" id="lang-menu"></div>
+    </div>
+</header>
+
+<main id="chat"><div class="wrap" id="wrap"></div></main>
+
+<div class="cw">
+  <div class="composer">
+    <div class="att" id="att" style="display:none"></div>
+    <div class="comp-top">
+      <button class="cb attach" id="attach-btn" aria-label="Attach file or image" onclick="$('file-inp').click()"><svg class="i"><use href="#plus"/></svg></button>
+      <input type="file" id="file-inp" hidden accept="image/*,video/*,.pdf,.txt,.csv,.json,.doc,.docx" onchange="onFile(this)">
+      <textarea id="inp" rows="1" dir="auto" placeholder="Message XGX AI…"></textarea>
+      <button class="cb send" id="send" onclick="handleSend()" disabled><svg class="i"><use href="#up"/></svg></button>
+    </div>
+    <div class="comp-bottom">
+      <button class="mchip beast" id="beast-chip" onclick="toggleFeature('beast')"><span>Beast 👿</span></button>
+      <button class="mchip" id="img-chip" onclick="toggleMedia('image')"><svg class="i s"><use href="#img"/></svg><span>Image</span><span class="vbadge">VIP</span></button>
+      <button class="mchip" id="vid-chip" onclick="toggleMedia('video')"><svg class="i s"><use href="#video"/></svg><span>Video</span><span class="vbadge">VIP</span></button>
+      <button class="mchip" id="web-chip" onclick="toggleFeature('web')"><svg class="i s"><use href="#globe"/></svg><span>Web</span><span class="vbadge">VIP</span></button>
+      
+    </div>
+  </div>
+</div>
+
+<div class="ov" id="ov" onclick="closeAll()"></div>
+<aside class="drawer" id="drawer">
+  <div class="brand"><span class="live"></span><span class="brand-logo brand-sm"><span class="mkc pic"></span><span class="bx">XGX</span><span class="ba">AI</span></span></div>
+  <button class="nb" id="newchat-drawer" onclick="newChat();closeAll()"><svg class="i"><use href="#edit"/></svg><span data-i="newChat">New chat</span></button>
+  <button class="nb code-nb" id="beast-drawer" onclick="toggleFeature('beast')"><span>Beast</span><span class="st">OFF</span></button>
+    <button class="nb code-nb" id="xgx-code-btn" onclick="toggleProMode()"><svg class="i"><use href="#spark"/></svg><span data-i="codeMenu">XGX AI CODE</span><span class="st">OFF</span></button>
+  <button class="nb" onclick="openApi()"><svg class="i"><use href="#key"/></svg><span>API Key</span></button>
+  <div class="lbl" data-i="conv">CONVERSATIONS</div>
+  <div id="hist"></div>
+  <div class="settings" id="settings">
+    <button class="nb" id="theme-drawer" onclick="toggleTheme()"><span data-i="theme">Theme</span></button>
+    <button class="nb" onclick="window.open('https://t.me/GPTXGX', '_blank')"><span data-i="channel">Channel</span></button>
+    <button class="nb" onclick="clearAllChats()"><span data-i="clear">Clear all chats</span></button>
+  </div>
+  <button class="nb set-toggle" id="set-toggle" onclick="toggleSettings()"><svg class="i"><use href="#gear"/></svg><span>Settings</span><svg class="i s chev"><path d="M6 9l6 6 6-6" fill="none"/></svg></button>
+  <button class="vipcard" onclick="openVip()"><svg class="i"><use href="#star"/></svg><span><b id="vtitle"></b><small id="vsub"></small></span></button>
+</aside>
+
+<!-- VIP panel and TON payment -->
+<div class="sheet" id="sheet">
+  <button class="sx" onclick="closeVip()"><svg class="i s"><use href="#x"/></svg></button>
+
+  <div id="vip-step-1">
+    <div class="vip-hero">
+      <span class="brand-logo gold-logo"><span class="bx">XGX</span><span class="ba">AI</span></span>
+      <div>
+        <div class="vip-title" data-i="vipTitle"></div>
+        <div class="vip-sub" data-i="vipTag"></div>
+      </div>
+    </div>
+    <ul class="perks">
+      <li><svg class="i"><use href="#check"/></svg><span data-i="vp1"></span></li>
+      <li><svg class="i"><use href="#check"/></svg><span data-i="vp2"></span></li>
+      <li><svg class="i"><use href="#check"/></svg><span data-i="vp3"></span></li>
+      <li><svg class="i"><use href="#check"/></svg><span data-i="vp4"></span></li>
+    </ul>
+
+    <div class="sec-label" data-i="secChat"></div>
+    <button class="planc" onclick="selectPlan('1 ماهه', 9, '1 Month')">
+      <span class="pl-name" data-i="m1"></span>
+      <span class="pl-price"><svg class="coin"><use href="#gram"/></svg>9 GRAM</span>
+    </button>
+    <button class="planc best" onclick="selectPlan('۳ ماهه', 23, '3 Months')">
+      <span class="hang"><span class="string"></span><span class="tag" data-i="off15"></span></span>
+      <span class="pl-badge" data-i="bestv"></span>
+      <span class="pl-name" data-i="m3"></span>
+      <span class="pl-price"><svg class="coin"><use href="#gram"/></svg>23 GRAM</span>
+    </button>
+
+    <div class="sec-label" data-i="secMedia"></div>
+    <div class="sec-cap" data-i="mediaCap"></div>
+    <ul class="perks" style="margin-bottom:12px">
+      <li><svg class="i"><use href="#img"/></svg><span data-i="mi1"></span></li>
+      <li><svg class="i"><use href="#video"/></svg><span data-i="mi2"></span></li>
+      <li><svg class="i"><use href="#check"/></svg><span data-i="mi3"></span></li>
+    </ul>
+    <button class="planc" onclick="selectPlan('media_1m', 65, '1 Month', true)">
+      <span class="pl-name" data-i="m1"></span>
+      <span class="pl-price">$65</span>
+    </button>
+    <button class="planc best" onclick="selectPlan('media_3m', 119, '3 Months', true)">
+      <span class="hang"><span class="string"></span><span class="tag" data-i="off39"></span></span>
+      <span class="pl-badge" data-i="bestv"></span>
+      <span class="pl-name" data-i="m3"></span>
+      <span class="pl-price">$119</span>
+    </button>
+  </div>
+
+  <div id="vip-step-api" style="display:none;">
+    <div class="pay-head">
+      <button class="back-link" onclick="backToVip()">‹ Back</button>
+      <span class="pay-title">API Key</span>
+    </div>
+    <div class="api-desc">Get a personal API key to use XGX AI inside your own apps, bots and tools. To buy one, message our support on Telegram: <b>@zeoosa</b></div>
+    <button class="submit" onclick="window.open('https://t.me/zeoosa','_blank')">Message support @zeoosa</button>
+  </div>
+
+  <div id="vip-step-2" style="display:none;">
+    <div class="pay-head">
+      <button class="back-link" onclick="backToVip()">‹ Back</button>
+      <span class="pay-title">Complete payment</span>
+    </div>
+    <div class="pay-plan" id="pay-plan"></div>
+    <div class="pay-amount"><svg id="pay-coin" class="coin"><use href="#gram"/></svg><span id="pay-amt"></span><span id="pay-unit">&nbsp;GRAM</span></div>
+    <ol class="steps">
+      <li>Send exactly <b><span id="pay-amt2"></span><span id="pay-unit2"> GRAM</span></b> to the address below</li>
+      <li>Paste the transaction hash (TxID)</li>
+      <li>Submit. Your VIP is activated within 1 hour of payment</li>
+    </ol>
+    <div class="pay-box">
+      <img class="pay-qr" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=UQAPHizKWiZrTKECmtJq7M4nV-mFG4gGgBVmr1b408gxV3Cx" alt="GRAM payment QR">
+      <div class="pay-addr">
+        <div class="addr-txt">UQAPHizKWiZrTKECmtJq7M4nV-mFG4gGgBVmr1b408gxV3Cx</div>
+        <button onclick="copyTON()" class="copy-btn">Copy</button>
+      </div>
+    </div>
+    <label class="field-label" for="txid-input">Transaction hash (TxID)</label>
+    <input type="text" id="txid-input" placeholder="Paste TxID here..." dir="ltr" class="txid">
+    <button class="submit" onclick="submitTxID()">Submit payment</button>
+  </div>
+</div>
+<div id="toast"></div>
+
+<script>
+const BACKEND_URL = "https://ktowtpyyuhzronbfzoyw.supabase.co/functions/v1/super-handler";
+const SUPABASE_KEY = "sb_publishable_MgZiGFoBnEVKyq39Xu8ZQQ_WMniC6oF";
+const VIP_USERS = ["LLPFQ"];   // VIP username
+const KEEP_DAYS_FREE = 3;      // chat history kept for normal users (days after last message)
+const KEEP_DAYS_VIP = 30;      // chat history kept for VIP users (days after last message)
+const FIRST_DAY_LIMIT = 10;    // messages allowed on the first day
+const LATER_DAY_LIMIT = 3;     // messages allowed on later days
+
+const tg = window.Telegram?.WebApp;
+const myId = tg?.initDataUnsafe?.user?.id || "unknown";
+tg?.expand();
+tg?.ready();
+
+const $ = id => document.getElementById(id);
+const ic = (n, c = '') => `<svg class="i ${c}"><use href="#${n}"/></svg>`;
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
+const unesc = s => String(s).replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').replace(/&#39;/g,"'").replace(/&amp;/g,'&');
+
+const myUser = (tg?.initDataUnsafe?.user?.username || "").toLowerCase();
+const isVip = VIP_USERS.some(u => u.toLowerCase() === myUser);
+let busy = false;
+let sessions = [];
+let cur = null;
+let isProMode = false;
+
+// ---------- theme ----------
+function toggleTheme() {
+  document.body.classList.toggle('light');
+  try { localStorage.setItem('xgx_theme', document.body.classList.contains('light') ? 'light' : 'dark'); } catch (e) {}
+  themeIcon();
+}
+function themeIcon() {
+  const b = $('theme-btn');
+  if (b) b.innerHTML = ic(document.body.classList.contains('light') ? 'sun' : 'moon');
+}
+
+// ---------- pro mode ----------
+function toggleProMode() {
+  isProMode = !isProMode;
+  syncCodeBtns();
+  toast(isProMode ? "Code mode on: serious, technical answers " : "Code mode off");
+}
+function syncCodeBtns() {
+  $('pro-btn').classList.toggle('on', isProMode);
+  const b = $('xgx-code-btn');
+  b.classList.toggle('on', isProMode);
+  b.querySelector('.st').textContent = isProMode ? 'ON' : 'OFF';
+}
+function clearAllChats() {
+  const go = () => {
+    sessions = [];
+    saveAll();
+    newChat();
+    closeAll();
+    toast("All chats deleted");
+  };
+  if (tg?.showConfirm) tg.showConfirm("Delete all chats on this device?", ok => { if (ok) go(); });
+  else if (confirm("Delete all chats on this device?")) go();
+}
+
+// ---------- chat history ----------
+function saveAll() {
+  try { localStorage.setItem(`xgx_chats_${myId}`, JSON.stringify(sessions)); } catch (e) {}
+}
+function loadAll() {
+  try { sessions = JSON.parse(localStorage.getItem(`xgx_chats_${myId}`) || '[]'); } catch (e) { sessions = []; }
+  pruneOld();
+}
+function pruneOld() {
+  const keepMs = (isVip ? KEEP_DAYS_VIP : KEEP_DAYS_FREE) * 86400000;
+  const now = Date.now();
+  sessions = sessions.filter(s => now - s.ts <= keepMs);
+  saveAll();
+}
+function newChat() {
+  cur = {id: Date.now(), title: 'New chat', ts: Date.now(), messages: []};
+  render();
+  renderHist();
+}
+function openChat(id) {
+  const s = sessions.find(x => x.id === id);
+  if (!s) return;
+  cur = s;
+  render();
+  renderHist();
+  closeAll();
+}
+function delChat(e, id) {
+  e.stopPropagation();
+  sessions = sessions.filter(x => x.id !== id);
+  saveAll();
+  if (cur && cur.id === id) newChat();
+  else renderHist();
+}
+function renderHist() {
+  const h = $('hist');
+  h.innerHTML = '';
+  [...sessions].sort((a, b) => b.ts - a.ts).forEach(s => {
+    const d = document.createElement('div');
+    d.className = 'h' + (cur && s.id === cur.id ? ' on' : '');
+    d.innerHTML = `<div class="h-txt"><span>${s.title}</span><small>${new Date(s.ts).toLocaleDateString()}</small></div><button onclick="delChat(event, ${s.id})">${ic('x', 's')}</button>`;
+    d.onclick = () => openChat(s.id);
+    h.appendChild(d);
+  });
+}
+
+// ---------- chat view ----------
+function render() {
+  const w = $('wrap');
+  w.innerHTML = '';
+  if (!cur || !cur.messages.length) {
+    w.innerHTML = `
+      <div class="welcome">
+        <div class="logo"><span class="live big"></span></div>
+        <h1>XGX AI</h1>
+        <p>${t('welcome')}</p>
+        <div class="quick-actions">
+          <div class="qa-card" onclick="sendQuickAction('Review my code for bugs and security issues. I will paste it next.')">
+            <div class="qa-icon"><svg class="i"><use href="#shield"/></svg></div>
+            <div class="qa-title">CODE_REVIEW</div>
+            <div class="qa-desc">${t('c1d')}</div>
+          </div>
+          <div class="qa-card" onclick="sendQuickAction('How can I make my home Wi-Fi network more secure?')">
+            <div class="qa-icon"><svg class="i"><use href="#wifi"/></svg></div>
+            <div class="qa-title">HOME_NET</div>
+            <div class="qa-desc">${t('c2d')}</div>
+          </div>
+          <div class="qa-card" onclick="sendQuickAction('Write a Python script that reads a CSV file and prints the total of each column.')">
+            <div class="qa-icon"><svg class="i"><use href="#cpu"/></svg></div>
+            <div class="qa-title">SCRIPT_LAB</div>
+            <div class="qa-desc">${t('c3d')}</div>
+          </div>
+          <div class="qa-card" onclick="sendQuickAction('Explain crypto wallets and blockchain basics in simple terms.')">
+            <div class="qa-icon"><svg class="i"><use href="#lock"/></svg></div>
+            <div class="qa-title">CRYPTO_LEARN</div>
+            <div class="qa-desc">${t('c4d')}</div>
+          </div>
+        </div>
+      </div>`;
+  } else {
+    cur.messages.forEach((m, i) => {
+      const r = document.createElement('div');
+      r.className = 'row ' + m.role;
+      if (m.role === 'user') {
+        r.innerHTML = `<div class="bub">${m.text}</div>`;
+      } else {
+        r.innerHTML = `<div class="av"><span class="live"></span></div><div class="col"><div class="body">${fmt(m.text)}</div><div class="acts"><button class="actbtn" onclick="copyMsg(this, ${i})">Copy</button><button class="actbtn" data-react="like" onclick="reactMsg(this, 'like')">Like</button><button class="actbtn" data-react="dislike" onclick="reactMsg(this, 'dislike')">Dislike</button></div></div>`;
+      }
+      w.appendChild(r);
+    });
+  }
+  $('chat').scrollTop = $('chat').scrollHeight;
+  updQuota();
+}
+
+// ---------- formatting and copy ----------
+function fmt(s) {
+  return s.replace(/```([^\n`]*)\n?([\s\S]*?)```/g, (_, lang, code) => {
+    const label = lang.trim() || 'code';
+    return `<div class="cblk"><div class="cbar"><span>${label}</span><button class="cbtn" onclick="copyCode(this)">Copy</button></div><pre><code>${code.replace(/\n+$/, '')}</code></pre></div>`;
+  });
+}
+function copyText(txt, done) {
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(txt).then(done).catch(() => fallbackCopy(txt, done));
+  } else {
+    fallbackCopy(txt, done);
+  }
+}
+function fallbackCopy(txt, done) {
+  const ta = document.createElement('textarea');
+  ta.value = txt;
+  ta.style.position = 'fixed';
+  ta.style.opacity = '0';
+  document.body.appendChild(ta);
+  ta.select();
+  try { document.execCommand('copy'); done(); } catch (e) { toast('Copy failed! '); }
+  ta.remove();
+}
+function flash(btn, label, back) {
+  btn.textContent = label;
+  setTimeout(() => { btn.textContent = back; }, 1500);
+}
+function copyCode(btn) {
+  const txt = btn.closest('.cblk').querySelector('code').textContent;
+  copyText(txt, () => flash(btn, 'Copied', 'Copy'));
+}
+function copyMsg(btn, i) {
+  const m = cur.messages[i];
+  if (!m) return;
+  copyText(unesc(m.text), () => flash(btn, 'Copied', 'Copy'));
+}
+function reactMsg(btn, kind) {
+  const row = btn.closest('.acts');
+  row.querySelectorAll('[data-react]').forEach(b => b.classList.remove('on', 'off'));
+  btn.classList.add(kind === 'like' ? 'on' : 'off');
+}
+
+// ---------- toast ----------
+function toast(msg) {
+  const e = $('toast');
+  e.textContent = msg;
+  e.classList.add('show');
+  setTimeout(() => e.classList.remove('show'), 2400);
+}
+
+// ---------- daily limit ----------
+function getLimitData() {
+  const today = new Date().toISOString().split('T')[0];
+  const data = JSON.parse(localStorage.getItem(`xgx_limit_${myId}`) || '{}');
+  if (!data.first_use) data.first_use = today;
+  if (data.date !== today) { data.date = today; data.count = 0; }
+  return { data, today };
+}
+function updQuota() {
+  const q = $('quota');
+  if (isVip) { q.textContent = t('vipShort'); return; }
+  const { data, today } = getLimitData();
+  const maxAllowed = data.first_use === today ? FIRST_DAY_LIMIT : LATER_DAY_LIMIT;
+  const remaining = Math.max(0, maxAllowed - data.count);
+  if (remaining === 0) {
+    q.innerHTML = '0 <button class="upg" onclick="openVip()">' + t('upgrade') + '</button>';
+  } else {
+    q.textContent = remaining;
+  }
+}
+
+// ---------- drawer and VIP panel ----------
+// ---------- language ----------
+const LANGS = [
+  {id:'en', name:'English', flag:'🇺🇸', dir:'ltr'},
+  {id:'fa', name:'فارسی', flag:'🇮🇷', dir:'rtl'},
+  {id:'ar', name:'العربية', flag:'🇸🇦', dir:'rtl'},
+  {id:'ru', name:'Русский', flag:'🇷🇺', dir:'ltr'},
+  {id:'zh', name:'中文', flag:'🇨🇳', dir:'ltr'},
+  {id:'es', name:'Español', flag:'🇪🇸', dir:'ltr'},
+  {id:'fr', name:'Français', flag:'🇫🇷', dir:'ltr'}
+];
+const I18N = {
+ "en": {
+  "vipTitle": "Go Unlimited with XGX AI VIP",
+  "vipTag": "No filters. No limits. Latest models.",
+  "vp1": "Uncensored models, with no filters and no restrictions",
+  "vp2": "Latest version of every model, always up to date",
+  "vp3": "Unlimited messages every day, no waiting",
+  "vp4": "30-day history, so your conversations are never lost",
+  "secChat": "Chat",
+  "m1": "1 Month",
+  "m3": "3 Months",
+  "bestv": "Best value",
+  "off15": "15% OFF",
+  "secMedia": "Image &amp; Video",
+  "mediaCap": "The strongest image and video models on the market.",
+  "mi1": "Images: up to 50 images per day",
+  "mi2": "Video: only 1 minute of natural-quality video per day",
+  "mi3": "Tap Image or Video in the chat bar to turn it on, then describe what you want",
+  "off39": "39% OFF",
+  "ph": "Message XGX AI…",
+  "welcome": "What can I help you with today?",
+  "c1d": "Find bugs and security flaws in your code.",
+  "c2d": "Check and harden your home Wi-Fi security.",
+  "c3d": "Write and debug scripts in any language.",
+  "c4d": "Understand crypto, wallets and blockchain.",
+  "newChat": "New chat",
+  "conv": "CONVERSATIONS",
+  "codeMenu": "XGX AI CODE",
+  "channel": "Channel",
+  "clear": "Clear all chats",
+  "theme": "Theme",
+  "upgrade": "Upgrade",
+  "vipShort": "VIP",
+  "vipUp": "Upgrade to VIP",
+  "vipOn": "VIP active",
+  "vipSubUp": "Unlimited messages, DeepSeek and GPT",
+  "vipSubOn": "Unlimited messages · history kept 30 days"
+ },
+ "fa": {
+  "vipTitle": "با XGX AI VIP نامحدود شو",
+  "vipTag": "بدون فیلتر. بدون محدودیت. آخرین مدل‌ها.",
+  "vp1": "مدل‌های بدون سانسور، بدون فیلتر و محدودیت",
+  "vp2": "آخرین نسخه‌ی همه‌ی مدل‌ها، همیشه به‌روز",
+  "vp3": "پیام نامحدود هر روز، بدون انتظار",
+  "vp4": "تاریخچه ۳۰ روزه، گفتگوهات هیچ‌وقت گم نمی‌شه",
+  "secChat": "چت",
+  "m1": "۱ ماهه",
+  "m3": "۳ ماهه",
+  "bestv": "بهترین ارزش",
+  "off15": "۱۵٪ تخفیف",
+  "secMedia": "تصویر و ویدیو",
+  "mediaCap": "قوی‌ترین مدل‌های تصویر و ویدیو در بازار.",
+  "mi1": "تصویر: تا ۵۰ تصویر در روز",
+  "mi2": "ویدیو: فقط ۱ دقیقه ویدیو با کیفیت طبیعی در روز",
+  "mi3": "برای روشن کردن، روی تصویر یا ویدیو در نوار چت بزن و هرچی می‌خوای توصیف کن",
+  "off39": "۳۹٪ تخفیف",
+  "ph": "به XGX AI پیام بده…",
+  "welcome": "امروز چطور می‌تونم کمکت کنم؟",
+  "c1d": "باگ‌ها و نقص‌های امنیتی کدت رو پیدا کن.",
+  "c2d": "امنیت وای‌فای خونه‌ت رو بررسی و تقویت کن.",
+  "c3d": "اسکریپت بنویس و در هر زبانی اشکال‌زدایی کن.",
+  "c4d": "کریپتو، کیف پول و بلاکچین رو یاد بگیر.",
+  "newChat": "چت جدید",
+  "conv": "گفتگوها",
+  "codeMenu": "XGX AI CODE",
+  "channel": "کانال",
+  "clear": "پاک کردن همه چت‌ها",
+  "theme": "تم",
+  "upgrade": "ارتقا",
+  "vipShort": "VIP",
+  "vipUp": "ارتقا به VIP",
+  "vipOn": "VIP فعال است",
+  "vipSubUp": "پیام نامحدود، DeepSeek و GPT",
+  "vipSubOn": "پیام نامحدود · تاریخچه ۳۰ روزه"
+ },
+ "ar": {
+  "vipTitle": "ارتقِ إلى XGX AI VIP بلا حدود",
+  "vipTag": "بلا فلاتر. بلا حدود. أحدث النماذج.",
+  "vp1": "نماذج بلا رقابة، دون فلاتر أو قيود",
+  "vp2": "أحدث إصدار من كل نموذج، دائمًا محدّث",
+  "vp3": "رسائل غير محدودة كل يوم، بلا انتظار",
+  "vp4": "سجل 30 يومًا، فلا تضيع محادثاتك أبدًا",
+  "secChat": "الدردشة",
+  "m1": "شهر واحد",
+  "m3": "3 أشهر",
+  "bestv": "أفضل قيمة",
+  "off15": "خصم 15%",
+  "secMedia": "الصور والفيديو",
+  "mediaCap": "أقوى نماذج الصور والفيديو في السوق.",
+  "mi1": "صور: حتى 50 صورة يوميًا",
+  "mi2": "فيديو: دقيقة واحدة فقط من فيديو بجودة طبيعية يوميًا",
+  "mi3": "اضغط على الصورة أو الفيديو في شريط الدردشة لتفعيلها ثم صف ما تريد",
+  "off39": "خصم 39%",
+  "ph": "أرسل رسالة إلى XGX AI…",
+  "welcome": "بماذا يمكنني مساعدتك اليوم؟",
+  "c1d": "ابحث عن الأخطاء والثغرات الأمنية في كودك.",
+  "c2d": "افحص شبكة Wi-Fi المنزلية وقوِّ أمانها.",
+  "c3d": "اكتب السكربتات وصحّحها بأي لغة.",
+  "c4d": "افهم العملات الرقمية والمحافظ والبلوكتشين.",
+  "newChat": "محادثة جديدة",
+  "conv": "المحادثات",
+  "codeMenu": "XGX AI CODE",
+  "channel": "القناة",
+  "clear": "حذف كل المحادثات",
+  "theme": "المظهر",
+  "upgrade": "ترقية",
+  "vipShort": "VIP",
+  "vipUp": "الترقية إلى VIP",
+  "vipOn": "VIP مفعل",
+  "vipSubUp": "رسائل غير محدودة، DeepSeek وGPT",
+  "vipSubOn": "رسائل غير محدودة · سجل 30 يومًا"
+ },
+ "ru": {
+  "vipTitle": "Безлимит с XGX AI VIP",
+  "vipTag": "Без фильтров. Без ограничений. Новейшие модели.",
+  "vp1": "Модели без цензуры, без фильтров и ограничений",
+  "vp2": "Последние версии всех моделей, всегда актуальные",
+  "vp3": "Безлимитные сообщения каждый день, без ожидания",
+  "vp4": "История 30 дней, ваши диалоги не потеряются",
+  "secChat": "Чат",
+  "m1": "1 месяц",
+  "m3": "3 месяца",
+  "bestv": "Лучшая цена",
+  "off15": "скидка 15%",
+  "secMedia": "Изображения и видео",
+  "mediaCap": "Самые сильные модели изображений и видео на рынке.",
+  "mi1": "Изображения: до 50 в день",
+  "mi2": "Видео: всего 1 минута видео с natural-качеством в день",
+  "mi3": "Нажмите «Image» или «Video» в строке чата, чтобы включить, затем опишите, что нужно",
+  "off39": "скидка 39%",
+  "ph": "Напишите XGX AI…",
+  "welcome": "Чем могу помочь сегодня?",
+  "c1d": "Находите ошибки и уязвимости в коде.",
+  "c2d": "Проверьте и укрепите безопасность домашнего Wi-Fi.",
+  "c3d": "Пишите и отлаживайте скрипты на любом языке.",
+  "c4d": "Разберитесь в криптовалютах, кошельках и блокчейне.",
+  "newChat": "Новый чат",
+  "conv": "ДИАЛОГИ",
+  "codeMenu": "XGX AI CODE",
+  "channel": "Канал",
+  "clear": "Удалить все чаты",
+  "theme": "Тема",
+  "upgrade": "Улучшить",
+  "vipShort": "VIP",
+  "vipUp": "Перейти на VIP",
+  "vipOn": "VIP активен",
+  "vipSubUp": "Безлимит, DeepSeek и GPT",
+  "vipSubOn": "Безлимит · история 30 дней"
+ },
+ "zh": {
+  "vipTitle": "升级 XGX AI VIP，无限畅聊",
+  "vipTag": "无过滤，无限制，最新模型。",
+  "vp1": "无审查模型，无过滤与限制",
+  "vp2": "所有模型的最新版本，始终保持更新",
+  "vp3": "每天无限消息，无需等待",
+  "vp4": "保存30天历史，对话永不丢失",
+  "secChat": "聊天",
+  "m1": "1个月",
+  "m3": "3个月",
+  "bestv": "最超值",
+  "off15": "省15%",
+  "secMedia": "图片与视频",
+  "mediaCap": "市场上最强的图片和视频模型。",
+  "mi1": "图片：每天最多50张",
+  "mi2": "视频：每天仅限1分钟自然画质视频",
+  "mi3": "在聊天栏点击“图片”或“视频”开启，然后描述你的需求",
+  "off39": "省39%",
+  "ph": "给 XGX AI 发消息…",
+  "welcome": "今天需要我帮什么忙？",
+  "c1d": "找出代码中的错误和安全漏洞。",
+  "c2d": "检查并加固家庭 Wi-Fi 的安全性。",
+  "c3d": "用任何语言编写并调试脚本。",
+  "c4d": "了解加密货币、钱包和区块链。",
+  "newChat": "新对话",
+  "conv": "对话",
+  "codeMenu": "XGX AI CODE",
+  "channel": "频道",
+  "clear": "清空所有对话",
+  "theme": "主题",
+  "upgrade": "升级",
+  "vipShort": "VIP",
+  "vipUp": "升级 VIP",
+  "vipOn": "VIP 已激活",
+  "vipSubUp": "无限消息、DeepSeek 和 GPT",
+  "vipSubOn": "无限消息 · 保存 30 天历史"
+ },
+ "es": {
+  "vipTitle": "Sé ilimitado con XGX AI VIP",
+  "vipTag": "Sin filtros. Sin límites. Últimos modelos.",
+  "vp1": "Modelos sin censura, sin filtros ni restricciones",
+  "vp2": "Últimas versiones de todos los modelos, siempre al día",
+  "vp3": "Mensajes ilimitados cada día, sin esperas",
+  "vp4": "Historial de 30 días, tus conversaciones nunca se pierden",
+  "secChat": "Chat",
+  "m1": "1 mes",
+  "m3": "3 meses",
+  "bestv": "Mejor valor",
+  "off15": "15% DTO.",
+  "secMedia": "Imagen y vídeo",
+  "mediaCap": "Los modelos de imagen y vídeo más potentes del mercado.",
+  "mi1": "Imágenes: hasta 50 al día",
+  "mi2": "Vídeo: solo 1 minuto de vídeo de calidad natural al día",
+  "mi3": "Toca Imagen o Vídeo en la barra del chat para activarlo y describe lo que quieres",
+  "off39": "39% DTO.",
+  "ph": "Escribe a XGX AI…",
+  "welcome": "¿En qué puedo ayudarte hoy?",
+  "c1d": "Encuentra errores y fallos de seguridad en tu código.",
+  "c2d": "Revisa y refuerza la seguridad de tu Wi-Fi de casa.",
+  "c3d": "Escribe y depura scripts en cualquier lenguaje.",
+  "c4d": "Entiende cripto, carteras y blockchain.",
+  "newChat": "Nuevo chat",
+  "conv": "CONVERSACIONES",
+  "codeMenu": "XGX AI CODE",
+  "channel": "Canal",
+  "clear": "Borrar todos los chats",
+  "theme": "Tema",
+  "upgrade": "Mejorar",
+  "vipShort": "VIP",
+  "vipUp": "Mejorar a VIP",
+  "vipOn": "VIP activo",
+  "vipSubUp": "Mensajes ilimitados, DeepSeek y GPT",
+  "vipSubOn": "Mensajes ilimitados · historial de 30 días"
+ },
+ "fr": {
+  "vipTitle": "Passez illimité avec XGX AI VIP",
+  "vipTag": "Sans filtres. Sans limites. Derniers modèles.",
+  "vp1": "Modèles sans censure, sans filtres ni restrictions",
+  "vp2": "Dernières versions de chaque modèle, toujours à jour",
+  "vp3": "Messages illimités chaque jour, sans attente",
+  "vp4": "Historique de 30 jours, vos conversations ne sont jamais perdues",
+  "secChat": "Chat",
+  "m1": "1 mois",
+  "m3": "3 mois",
+  "bestv": "Meilleure offre",
+  "off15": "-15 %",
+  "secMedia": "Image et vidéo",
+  "mediaCap": "Les modèles image et vidéo les plus puissants du marché.",
+  "mi1": "Images : jusqu'à 50 par jour",
+  "mi2": "Vidéo : seulement 1 minute de vidéo en qualité naturelle par jour",
+  "mi3": "Touchez Image ou Vidéo dans la barre de chat pour l'activer, puis décrivez ce que vous voulez",
+  "off39": "-39 %",
+  "ph": "Écris à XGX AI…",
+  "welcome": "Comment puis-je t'aider aujourd'hui ?",
+  "c1d": "Trouve les bugs et failles de sécurité de ton code.",
+  "c2d": "Vérifie et renforce la sécurité de ton Wi-Fi maison.",
+  "c3d": "Écris et débogue des scripts dans n'importe quel langage.",
+  "c4d": "Comprends les cryptos, les portefeuilles et la blockchain.",
+  "newChat": "Nouveau chat",
+  "conv": "CONVERSATIONS",
+  "codeMenu": "XGX AI CODE",
+  "channel": "Canal",
+  "clear": "Supprimer tous les chats",
+  "theme": "Thème",
+  "upgrade": "Passer VIP",
+  "vipShort": "VIP",
+  "vipUp": "Passer en VIP",
+  "vipOn": "VIP actif",
+  "vipSubUp": "Messages illimités, DeepSeek et GPT",
+  "vipSubOn": "Messages illimités · historique 30 jours"
+ }
+};
+let lang = 'en';
+function t(k) { return (I18N[lang] || I18N.en)[k] ?? I18N.en[k] ?? k; }
+function toggleLangMenu(e) {
+  e.stopPropagation();
+  buildLangMenu();
+  $('lang-menu').classList.toggle('show');
+}
+function buildLangMenu() {
+  const m = $('lang-menu');
+  m.innerHTML = '';
+  LANGS.forEach(x => {
+    const b = document.createElement('button');
+    b.className = 'lang-opt' + (x.id === lang ? ' on' : '');
+    b.innerHTML = `<span class="lf">${x.flag}</span><span>${x.name}</span>`;
+    b.onclick = () => setLang(x.id);
+    m.appendChild(b);
+  });
+}
+function setLang(id) {
+  lang = id;
+  try { localStorage.setItem('xgx_lang', id); } catch (e) {}
+  $('lang-menu').classList.remove('show');
+  applyLang();
+}
+function applyLang() {
+  const L = LANGS.find(x => x.id === lang) || LANGS[0];
+  document.documentElement.lang = L.id;
+  document.documentElement.dir = L.dir;
+  $('lang-btn').textContent = L.flag;
+  document.querySelectorAll('[data-i]').forEach(e => { e.textContent = t(e.dataset.i); });
+  $('inp').placeholder = t('ph');
+  updVipCard();
+  render();
+}
+document.addEventListener('click', () => { const m = $('lang-menu'); if (m) m.classList.remove('show'); });
+
+function updVipCard() {
+  $('vtitle').textContent = isVip ? t('vipOn') : t('vipUp');
+  $('vsub').textContent = isVip ? t('vipSubOn') : t('vipSubUp');
+}
+function openDrawer() {
+  pruneOld();
+  renderHist();
+  $('drawer').classList.add('open');
+  $('ov').classList.add('show');
+}
+function closeDrawer() { $('drawer').classList.remove('open'); }
+function openVip() {
+  backToVip();
+  closeDrawer();
+  $('ov').classList.add('show');
+  $('sheet').classList.add('show');
+}
+function closeVip() {
+  $('sheet').classList.remove('show');
+  $('ov').classList.remove('show');
+}
+function closeAll() {
+  closeDrawer();
+  closeVip();
+}
+let selectedPlan = {};
+function copyTON() {
+  navigator.clipboard.writeText("UQAPHizKWiZrTKECmtJq7M4nV-mFG4gGgBVmr1b408gxV3Cx")
+    .then(() => toast("Address copied! "))
+    .catch(() => toast("Copy failed! "));
+}
+function selectPlan(plan, price, label, usd = false) {
+  selectedPlan = { plan, price, usd };
+  $('pay-plan').textContent = `${label} plan`;
+  $('pay-amt').textContent = usd ? `$${price}` : price;
+  $('pay-unit').innerHTML = usd ? '' : '&nbsp;GRAM';
+  $('pay-coin').style.display = usd ? 'none' : '';
+  $('pay-amt2').textContent = usd ? `$${price}` : price;
+  $('pay-unit2').textContent = usd ? ' (in GRAM at the current rate)' : ' GRAM';
+  $('vip-step-1').style.display = 'none';
+  $('vip-step-2').style.display = 'block';
+}
+function backToVip() {
+  $('vip-step-1').style.display = 'block';
+  $('vip-step-2').style.display = 'none';
+  $('vip-step-api').style.display = 'none';
+}
+function openApi() {
+  backToVip();
+  $('vip-step-1').style.display = 'none';
+  $('vip-step-api').style.display = 'block';
+  closeDrawer();
+  $('ov').classList.add('show');
+  $('sheet').classList.add('show');
+}
+function toggleSettings() {
+  $('settings').classList.toggle('open');
+  $('set-toggle').classList.toggle('open');
+}
+async function submitTxID() {
+  const txid = $('txid-input').value.trim();
+  if (!txid) return toast("Please enter the transaction hash!");
+  try {
+    const res = await fetch(BACKEND_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${SUPABASE_KEY}`, 'apikey': SUPABASE_KEY },
+      body: JSON.stringify({
+        action: "submit_txid",
+        initData: tg?.initData || "",
+        plan: selectedPlan.plan,
+        currency: selectedPlan.usd ? 'USD' : 'GRAM',
+        price: selectedPlan.price,
+        txid: txid
+      })
+    });
+    const data = await res.json().catch(() => ({}));
+    toast(data.reply || (res.ok ? "Request sent!" : "Send failed! Please try again."));
+    if (res.ok) {
+      $('txid-input').value = '';
+      closeVip();
+      backToVip();
+    }
+  } catch (err) {
+    toast("Send failed! Please try again.");
+  }
+}
+
+// ---------- image and video ----------
+let mediaMode = 'text';   // 'text' | 'image' | 'video'
+function toggleMedia(kind) {
+  if (!isVip) {
+    toast('Image and video are for VIP members');
+    openVip();
+    return;
+  }
+  mediaMode = mediaMode === kind ? 'text' : kind;
+  $('img-chip').classList.toggle('on', mediaMode === 'image');
+  $('vid-chip').classList.toggle('on', mediaMode === 'video');
+  $('inp').placeholder = mediaMode === 'image' ? 'Describe the image you want…'
+    : mediaMode === 'video' ? 'Describe the video you want…' : t('ph');
+}
+
+// ---------- web search and beast mode ----------
+const feat = {web:false, beast:false};
+function toggleFeature(k) {
+  if (k === 'web' && !isVip) { toast('This feature is for VIP members'); openVip(); return; }
+  feat[k] = !feat[k];
+  $(k + '-chip').classList.toggle('on', feat[k]);
+  if (k === 'beast') {
+    const d = $('beast-drawer');
+    d.classList.toggle('on', feat.beast);
+    d.querySelector('.st').textContent = feat.beast ? 'ON' : 'OFF';
+  }
+  toast(k === 'beast' ? (feat[k] ? 'Beast 👿 ON' : 'Beast 👿 OFF')
+                      : (feat[k] ? 'Web search on' : 'Web search off'));
+}
+
+// ---------- attachments ----------
+let attach = null;
+function updSend() { $('send').disabled = busy || (!$('inp').value.trim() && !attach); }
+function onFile(inp) {
+  const f = inp.files[0];
+  inp.value = '';
+  if (!f) return;
+  if (f.size > 5 * 1024 * 1024) return toast('File is too large (max 5 MB)');
+  const r = new FileReader();
+  r.onload = () => { attach = {name: f.name, type: f.type, data: r.result}; showAtt(); updSend(); };
+  r.onerror = () => toast('Could not read the file');
+  r.readAsDataURL(f);
+}
+function showAtt() {
+  const a = $('att');
+  if (!attach) { a.style.display = 'none'; a.innerHTML = ''; return; }
+  a.style.display = 'flex';
+  a.innerHTML = `<span class="attn">📎 ${esc(attach.name)}</span><button class="attx" onclick="clearAtt()">${ic('x', 's')}</button>`;
+}
+function clearAtt() { attach = null; showAtt(); updSend(); }
+
+// ---------- sending ----------
+function sendQuickAction(text) {
+  $('inp').value = text;
+  handleSend();
+}
+
+async function handleSend() {
+  let text = $('inp').value.trim();
+  if ((!text && !attach) || busy) return;
+  const att = attach;
+  if (!text) text = att.name;
+
+  if (!isVip) {
+    const { data, today } = getLimitData();
+    const maxAllowed = data.first_use === today ? FIRST_DAY_LIMIT : LATER_DAY_LIMIT;
+    if (data.count >= maxAllowed) {
+      toast("Your daily limit is used up. Come back tomorrow or get VIP.");
+      openVip();
+      return;
+    }
+    data.count++;
+    localStorage.setItem(`xgx_limit_${myId}`, JSON.stringify(data));
+    updQuota();
+  }
+
+  if (!cur) newChat();
+  const chat = cur;
+  if (!sessions.includes(chat)) sessions.unshift(chat);
+  if (!chat.messages.length) chat.title = esc(text.slice(0, 30));
+  const history = chat.messages.slice(-15).map(m => ({
+    role: m.role === 'bot' ? 'assistant' : 'user',
+    content: unesc(m.text)
+  }));
+  chat.messages.push({role: 'user', text: esc(text) + (att ? '\n📎 ' + esc(att.name) : '')});
+  chat.ts = Date.now();
+
+  $('inp').value = '';
+  attach = null;
+  showAtt();
+  busy = true;
+  $('send').disabled = true;
+  render();
+  renderHist();
+  saveAll();
+
+  const typing = document.createElement('div');
+  typing.className = 'row bot';
+  typing.id = 'typing';
+  typing.innerHTML = `<div class="av"><span class="live"></span></div><div class="dots"><i></i><i></i><i></i></div>`;
+  $('wrap').appendChild(typing);
+  $('chat').scrollTop = $('chat').scrollHeight;
+
+  try {
+    const res = await fetch(BACKEND_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'apikey': SUPABASE_KEY
+      },
+      body: JSON.stringify({
+        message: text,
+        history: history,
+        initData: tg?.initData || "",
+        chat_id: String(chat.id),
+        pro_mode: isProMode,
+        beast_mode: feat.beast,
+        web_search: feat.web,
+        attachment: att || null,
+        action: mediaMode === 'text' ? 'chat' : 'generate_media',
+        mediaType: mediaMode
+      })
+    });
+    const data = await res.json().catch(() => ({}));
+    if (res.status === 429) {
+      chat.messages.push({role: 'bot', text: esc(data.reply || 'Daily limit reached.')});
+      openVip();
+    } else if (!res.ok) {
+      throw new Error(data.reply || `HTTP ${res.status}`);
+    } else {
+      const mediaUrl = /^https:\/\//.test(data.reply || '') ? esc(data.reply) : null;
+      if (mediaMode !== 'text' && mediaUrl) {
+        chat.messages.push({role: 'bot', text: mediaMode === 'image'
+          ? `<img class="gen-media" src="${mediaUrl}" alt="Generated image">`
+          : `<video class="gen-media" src="${mediaUrl}" controls playsinline></video>`});
+      } else {
+        chat.messages.push({role: 'bot', text: esc(data.reply ?? '')});
+      }
+    }
+  } catch (err) {
+    chat.messages.push({role: 'bot', text: "Server connection error. Please try again."});
+  } finally {
+    $('typing')?.remove();
+    chat.ts = Date.now();
+    busy = false;
+    updSend();
+    render();
+    renderHist();
+    saveAll();
+  }
+}
+
+// ---------- start ----------
+const inpEl = $('inp');
+inpEl.addEventListener('input', () => { updSend(); });
+inpEl.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); } });
+
+const setLive = () => document.querySelectorAll('.live').forEach(b => b.classList.toggle('offline', !navigator.onLine));
+window.addEventListener('online', setLive);
+window.addEventListener('offline', setLive);
+setLive();
+loadAll();
+newChat();
+if (localStorage.getItem('xgx_theme') === 'light') document.body.classList.add('light');
+themeIcon();
+lang = localStorage.getItem('xgx_lang') || 'en';
+if (!LANGS.some(x => x.id === lang)) lang = 'en';
+applyLang();
+</script>
+</body>
+</html>
